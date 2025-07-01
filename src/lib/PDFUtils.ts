@@ -2,9 +2,12 @@ import fs from "fs/promises";
 import path from "path";
 import pdf from "pdf-parse";
 
-const pdfFolder = path.resolve(process.cwd(), "public", "dlc", "pdfs");
+const pdfDsaFolder = path.resolve(process.cwd(), "public", "dsa");
+const pdfDlcFolder = path.resolve(process.cwd(), "public", "dlc", "pdfs");
 
-export async function extractAllPDFText(): Promise<string> {
+export async function extractAllPDFText(questionType: string): Promise<string> {
+  const pdfFolder = questionType === "code" ? pdfDsaFolder : pdfDlcFolder;
+
   try {
     const files = await fs.readdir(pdfFolder);
     const pdfFiles = files.filter((file) => file.endsWith(".pdf"));
@@ -21,4 +24,16 @@ export async function extractAllPDFText(): Promise<string> {
     console.error("Failed to extract PDF text:", error);
     throw new Error("PDF parsing failed.");
   }
+}
+
+export function filterTextByTopic(fullText: string, topic: string): string {
+  const lowerTopic = topic.toLowerCase();
+
+  const sections = fullText.split(/\n{2,}/);
+
+  const relevantSections = sections.filter((sec) =>
+    sec.toLowerCase().includes(lowerTopic)
+  );
+
+  return relevantSections.slice(0, 10).join("\n\n");
 }
