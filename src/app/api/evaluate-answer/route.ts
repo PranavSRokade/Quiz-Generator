@@ -1,9 +1,6 @@
+import { OPEN_AI } from "@/lib/variables";
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req: NextRequest) {
   const { expectedAnswer, studentAnswer } = await req.json();
@@ -29,7 +26,7 @@ export async function POST(req: NextRequest) {
                   }
                   `;
 
-  const completion = await openai.chat.completions.create({
+  const completion = await OPEN_AI.chat.completions.create({
     model: "gpt-4",
     messages: [{ role: "user", content: prompt }],
     temperature: 0,

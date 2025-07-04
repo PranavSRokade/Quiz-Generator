@@ -1,3 +1,29 @@
+.optionLabel {
+  display: block;
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #000000;
+}
+.optionLabel input[type="radio"] {
+  accent-color: #0070f3;
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+}
+.textArea {
+  width: 100%;
+  min-height: 140px;
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  background-color: #ffffff;
+  color: #000000;
+  resize: none;
+}
 .page {
   min-height: 100vh;
   padding: 2rem;
@@ -59,19 +85,6 @@
   color: #000000;
 }
 
-.optionLabel {
-  display: block;
-  margin: 0.5rem 0;
-  font-size: 1rem;
-  cursor: pointer;
-  color: #000000;
-}
-.optionLabel input[type="radio"] {
-  accent-color: #0070f3;
-  margin-right: 10px;
-  width: 18px;
-  height: 18px;
-}
 .feedback {
   margin-top: 0.5rem;
   font-size: 0.95rem;
@@ -160,19 +173,7 @@
 .questionCardContainer {
   margin-top: 30px;
 }
-.textArea {
-  width: 100%;
-  min-height: 140px;
-  padding: 8px;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-top: 8px;
-  margin-bottom: 16px;
-  background-color: #ffffff;
-  color: #000000;
-  resize: none;
-}
+
 .hintLine {
   margin-top: 0.5rem;
 }

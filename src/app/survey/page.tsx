@@ -1,17 +1,8 @@
 "use client";
-import Image from "next/image";
-import styles from "../../styles/page.module.css";
+import styles from "./survey.module.css";
 import React, { useState } from "react";
 import CodeEditor from "../components/CodeEditor";
-interface QuizQuestion {
-  question: string;
-  options: string[];
-  answer: string;
-  hint: string;
-  explanation: string;
-  type: "mcq" | "short" | "long" | "code";
-  possibleCorrectAnswers: string[];
-}
+import { QuizQuestion } from "@/types";
 
 const TextQuestion = React.memo(
   ({

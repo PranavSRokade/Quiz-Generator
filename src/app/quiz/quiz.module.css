@@ -1,0 +1,304 @@
+.optionLabel {
+  display: block;
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #000000;
+}
+.optionLabel input[type="radio"] {
+  accent-color: #0070f3;
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+}
+.textArea {
+  width: 100%;
+  min-height: 140px;
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  background-color: #ffffff;
+  color: #000000;
+  resize: none;
+}
+.page {
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f9fafb;
+  font-family: Arial, sans-serif;
+}
+
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  color: #000000;
+  flex: 3;
+}
+
+.button {
+  display: block;
+  width: 100%;
+  background-color: #0070f3;
+  color: white;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: #0059c1;
+}
+
+.questionCard {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #fafafa;
+  color: #000000;
+}
+
+.feedback {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.submitButton {
+  display: block;
+  width: 100%;
+  background-color: #28a745;
+  color: white;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: #218838;
+}
+
+.customTitle {
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+.loadingText {
+  color: #000000;
+  margin-top: 10px;
+}
+.correctAnswer {
+  font-weight: bold;
+  color: green;
+  margin-top: 20px;
+}
+
+.incorrectAnswer {
+  font-weight: bold;
+  color: red;
+  margin-top: 20px;
+}
+
+.passedTestCase {
+  font-weight: bold;
+  color: green;
+  margin-bottom: 20px;
+}
+
+.failedTestCase {
+  font-weight: bold;
+  color: red;
+  margin-bottom: 20px;
+}
+
+
+.inputContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding-left: 1rem;
+  padding-right: 2rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  flex: 1;
+  height: 45px;
+  color: #000000;
+  background-color: #ffffff;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1rem;
+}
+.hintButton {
+  margin-top: 0.5rem;
+  background-color: #e8f0fe;
+  border: 1px solid #90caf9;
+  color: #0d47a1;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.hintText {
+  margin-top: 0.3rem;
+  color: #555;
+  font-style: italic;
+}
+
+.questionCardContainer {
+  margin-top: 30px;
+}
+
+.hintLine {
+  margin-top: 0.5rem;
+}
+.codingQuestionContainer {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin: 2rem auto;
+  color: #1e1e1e;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.questionTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: #333;
+}
+
+.descriptionBlock,
+.exampleBlock,
+.constraintsBlock,
+.outputBlock {
+  margin-bottom: 1.5rem;
+}
+
+.descriptionBlock p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 0.8rem;
+}
+
+.exampleBlock pre,
+.outputBlock pre {
+  background-color: #0502024d;
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: "Courier New", monospace;
+  overflow-x: auto;
+  font-size: 0.95rem;
+}
+
+.constraintsBlock ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.constraintsBlock li {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.editorWrapper {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.runButton,
+.submitButton {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.runButton {
+  background-color: #0070f3;
+  color: white;
+}
+
+.runButton:hover {
+  background-color: #0059c1;
+}
+
+.submitButton {
+  background-color: #28a745;
+  color: white;
+}
+
+.submitButton:hover {
+  background-color: #218838;
+}
+
+.outputBlock h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.functionName strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.functionName code {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}

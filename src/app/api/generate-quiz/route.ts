@@ -1,10 +1,6 @@
-import { extractAllPDFText, filterTextByTopic } from "@/lib/PDFUtils";
+import { extractAllPDFText, filterTextByTopic } from "@/lib/functions";
+import { OPEN_AI } from "@/lib/variables";
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req: NextRequest) {
   try {
@@ -96,7 +92,52 @@ export async function POST(req: NextRequest) {
       Material:
       ${content}`;
 
-    const completion = await openai.chat.completions.create({
+    //TODO
+    //1. the quesitons refresh randomly
+
+    const codingQuestionPrompt = `Using the material below, generate two coding exercises based on the topic: ${topic}.
+        Follow these rules carefully:
+
+        1. The question should be at the ${difficulty} level and test a meaningful programming concept (e.g., algorithms, data structures, or language syntax).
+        2. The response should be in the following strict JSON format:
+
+        {
+          "questions": 
+          [
+            {
+              "question": "string",
+              "description": "string", 
+              "example": "string", 
+              "constraints": ["string", "string"],
+              "starterCode": "string",
+              "solutionCode": "string",
+              "testCases": [
+                { "input": "string", "expectedOutput": "string" },
+                { "input": "string", "expectedOutput": "string" },
+                { "input": "string", "expectedOutput": "string" }
+              ],
+              "explanation": "string",
+              "hint": "string",
+              "type": "code",
+              "functionName": "string",
+            }
+          ]
+        }
+
+        3. The description should clearly explain the task and what the user is expected to implement.
+        4. The example should show one clear input/output pair.
+        5. The constraints should include realistic conditions or limits (e.g., array length, input size).
+        6. The starterCode should include a function definition with an empty body in Python.
+        7. The solutionCode must be a correct working solution for the problem.
+        8. The functionName should match the function name used in both starterCode and solutionCode.
+        9. The testCases should be sufficient to verify the solution correctness.
+        10. Do not include any extra text outside the JSON response.
+        11. Do not use emojis anywhere.
+
+        Material:
+        ${content}`;
+
+    const completion = await OPEN_AI.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
@@ -111,7 +152,9 @@ export async function POST(req: NextRequest) {
               ? mcqPrompt
               : questionType === "short"
               ? shortAnswerPrompt
-              : longAnswerPrompt,
+              : questionType === "long"
+              ? longAnswerPrompt
+              : codingQuestionPrompt,
         },
       ],
       temperature: 0.7,
