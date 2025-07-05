@@ -5,6 +5,7 @@ import CodeQuestion from "../components/CodeQuestion";
 import MCQQuestion from "../components/MCQQuestion";
 import TextQuestion from "../components/TextQuestion";
 import { CodeEvaluationResult, QuizQuestion } from "@/types";
+import { createPublicKey } from "crypto";
 
 export default function Home() {
   // think how to add feedback
@@ -99,7 +100,6 @@ export default function Home() {
 
   const handleRunCode = async (index: number) => {
     const code = textAnswers[index] || "";
-    console.log(`Running code for question ${index}:`, code);
 
     try {
       const res = await fetch("/api/run-code", {
@@ -114,11 +114,17 @@ export default function Home() {
       });
 
       const data = await res.json();
-      console.log(`Output for question ${index}:`, data);
+
+      console.log('data', data);
 
       setOutputMap((prev) => ({
         ...prev,
-        [index]: data.output || "No output",
+        [index]:
+          data.output !== ""
+            ? data.output
+            : data.error !== ""
+            ? data.error
+            : "No output",
       }));
     } catch (err) {
       console.error("Run code error:", err);

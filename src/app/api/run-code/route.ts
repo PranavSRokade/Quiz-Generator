@@ -26,9 +26,20 @@ export async function POST(req: NextRequest) {
     });
 
     const pistonData = await pistonRes.json();
+    console.log(pistonData);
+
+    const stderr: string = pistonData.run?.stderr || "";
+    const stdout: string = pistonData.run?.stdout || "";
+
+    const cleanError =
+      stderr.split("\n").find((line) => line.toLowerCase().includes("error")) ||
+      stderr.trim();
 
     return new NextResponse(
-      JSON.stringify({ output: pistonData.run?.stdout || "No output" }),
+      JSON.stringify({
+        output: stdout.trim(),
+        error: cleanError,
+      }),
       {
         status: 200,
         headers: { "Content-Type": "application/json" },

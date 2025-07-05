@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
 
     //TODO
     //1. the quesitons refresh randomly
+    //2. binary trees questions do not get evaluated properly
 
     const codingQuestionPrompt = `Using the material below, generate two coding exercises based on the topic: ${topic}.
         Follow these rules carefully:

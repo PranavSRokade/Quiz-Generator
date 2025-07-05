@@ -3,6 +3,7 @@ import React from "react";
 import styles from "../quiz/quiz.module.css";
 import CodeEditor from "./CodeEditor";
 import { CodeEvaluationResult, QuizQuestion } from "@/types";
+import ReactMarkdown from "react-markdown";
 
 interface CodeQuestionProps {
   questionNumber: number;
@@ -100,31 +101,36 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
           <p style={{ fontSize: 18, marginBottom: 10 }}>
             Score: {(evaluationResult.score * 100).toFixed(0)}%
           </p>
-          <p>
-            <h3>Feedback:</h3> <em>{evaluationResult.feedback}</em>
-          </p>
+          <div className={styles.feedbackBlock}>
+            <h3>Feedback</h3>
+            <ReactMarkdown>{evaluationResult.feedback}</ReactMarkdown>
+          </div>
 
-          <h3 style={{ display: "block", marginTop: 10 }}>Test Case Details</h3>
-          <ul>
-            {evaluationResult.results.map((test, i) => (
-              <li key={i}>
-                <div className={styles.exampleBlock}>
-                  <strong>Input:</strong> {test.input} |
-                  <strong> Expected:</strong> {test.expected} |
-                  <strong> Got:</strong> {test.actual} |
-                  <p
-                    className={
-                      test.passed
-                        ? styles.passedTestCase
-                        : styles.failedTestCase
-                    }
-                  >
-                    {test.passed ? "Passed" : "Failed"}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className={styles.testCaseDetailsBlock}>
+            <h3 style={{ display: "block", marginTop: 10 }}>
+              Test Case Details
+            </h3>
+            <ol>
+              {evaluationResult.results.map((test, i) => (
+                <li key={i}>
+                  <div className={styles.exampleBlock}>
+                    <strong>Input:</strong> {test.input} |
+                    <strong> Expected:</strong> {test.expected} |
+                    <strong> Got:</strong> {test.actual} |
+                    <p
+                      className={
+                        test.passed
+                          ? styles.passedTestCase
+                          : styles.failedTestCase
+                      }
+                    >
+                      {test.passed ? "Passed" : "Failed"}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       )}
     </div>
