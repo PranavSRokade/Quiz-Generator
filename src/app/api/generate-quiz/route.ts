@@ -94,12 +94,11 @@ export async function POST(req: NextRequest) {
 
     //TODO
     //1. the quesitons refresh randomly
-    //2. binary trees questions do not get evaluated properly
 
     const codingQuestionPrompt = `Using the material below, generate two coding exercises based on the topic: ${topic}.
         Follow these rules carefully:
 
-        1. The question should be at the ${difficulty} level and test a meaningful programming concept (e.g., algorithms, data structures, or language syntax).
+        1. The question should be at the EASY level and test a meaningful programming concept (e.g., algorithms, data structures, or language syntax).
         2. The response should be in the following strict JSON format:
 
         {
@@ -126,14 +125,15 @@ export async function POST(req: NextRequest) {
         }
 
         3. The description should clearly explain the task and what the user is expected to implement.
-        4. The example should show one clear input/output pair.
+        4. The example should show one clear input/output pair. Never include null values in example. For data structures like binary trees or linked lists, represent inputs as serialized arrays or strings (e.g., "[1, 2, 3, null, 4]") instead of raw object constructors.
         5. The constraints should include realistic conditions or limits (e.g., array length, input size).
         6. The starterCode should include a function definition with an empty body in Python.
         7. The solutionCode must be a correct working solution for the problem.
         8. The functionName should match the function name used in both starterCode and solutionCode.
-        9. The testCases should be sufficient to verify the solution correctness.
+        9. The testCases should be sufficient to verify the solution correctness. Never include null values in test cases.
         10. Do not include any extra text outside the JSON response.
         11. Do not use emojis anywhere.
+        12. Test cases should use Python always, and should replace null with None.
 
         Material:
         ${content}`;

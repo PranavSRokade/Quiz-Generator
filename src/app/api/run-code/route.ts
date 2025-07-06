@@ -1,3 +1,4 @@
+import { runCodeOnJudge0, runCodeOnPiston } from "@/lib/functions";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -15,30 +16,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const pistonRes = await fetch("https://emkc.org/api/v2/piston/execute", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        language,
-        version: "3.10.0",
-        files: [{ name: "main.py", content: code }],
-      }),
-    });
-
-    const pistonData = await pistonRes.json();
-    console.log(pistonData);
-
-    const stderr: string = pistonData.run?.stderr || "";
-    const stdout: string = pistonData.run?.stdout || "";
-
-    const cleanError =
-      stderr.split("\n").find((line) => line.toLowerCase().includes("error")) ||
-      stderr.trim();
+    const result = await runCodeOnPiston("python", code);
+    // const result = await runCodeOnJudge0("python", code);
 
     return new NextResponse(
       JSON.stringify({
-        output: stdout.trim(),
-        error: cleanError,
+        output: result.output?.trim(),
+        error: result.error?.trim(),
       }),
       {
         status: 200,

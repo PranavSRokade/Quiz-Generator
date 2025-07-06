@@ -15,8 +15,6 @@ interface CodeQuestionProps {
   onSubmit: () => void;
   evaluationResult?: CodeEvaluationResult;
 }
-//TODO
-//figure out how to output error
 
 const CodeQuestion: React.FC<CodeQuestionProps> = ({
   questionNumber,
@@ -94,43 +92,52 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
       {evaluationResult && (
         <div className={styles.evaluationBlock}>
           <h2>Evaluation</h2>
-          <p style={{ marginTop: 10, fontSize: 18 }}>
+          {/* <p style={{ marginTop: 10, fontSize: 18 }}>
             Passed {evaluationResult.passed} / {evaluationResult.total} test
             cases
           </p>
           <p style={{ fontSize: 18, marginBottom: 10 }}>
             Score: {(evaluationResult.score * 100).toFixed(0)}%
-          </p>
+          </p> */}
           <div className={styles.feedbackBlock}>
             <h3>Feedback</h3>
             <ReactMarkdown>{evaluationResult.feedback}</ReactMarkdown>
           </div>
 
-          <div className={styles.testCaseDetailsBlock}>
-            <h3 style={{ display: "block", marginTop: 10 }}>
+          {/* <div className={styles.testCaseDetailsBlock}>
+            <h3 style={{ display: "block", marginTop: 10, marginBottom: 10 }}>
               Test Case Details
             </h3>
-            <ol>
+            <div>
               {evaluationResult.results.map((test, i) => (
-                <li key={i}>
-                  <div className={styles.exampleBlock}>
-                    <strong>Input:</strong> {test.input} |
-                    <strong> Expected:</strong> {test.expected} |
-                    <strong> Got:</strong> {test.actual} |
-                    <p
-                      className={
-                        test.passed
-                          ? styles.passedTestCase
-                          : styles.failedTestCase
-                      }
-                    >
-                      {test.passed ? "Passed" : "Failed"}
-                    </p>
+                <div
+                  key={i}
+                  className={styles.exampleBlock}
+                  style={{ marginBottom: "1em" }}
+                >
+                  <strong>Test Case {i + 1}: </strong>
+                  <span
+                    className={
+                      test.passed
+                        ? styles.passedTestCase
+                        : styles.failedTestCase
+                    }
+                  >
+                    {test.passed ? "Passed" : "Failed"}
+                  </span>
+                  <div>
+                    <strong>Input:</strong> {test.input}
                   </div>
-                </li>
+                  <div>
+                    <strong>Expected:</strong> {test.expected}
+                  </div>
+                  <div>
+                    <strong>Got:</strong> {test.actual}
+                  </div>
+                </div>
               ))}
-            </ol>
-          </div>
+            </div>
+          </div> */}
         </div>
       )}
     </div>

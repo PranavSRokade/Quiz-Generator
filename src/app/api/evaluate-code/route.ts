@@ -1,4 +1,4 @@
-import { delay, runCodeOnPiston } from "@/lib/functions";
+import { delay, runCodeOnJudge0, runCodeOnPiston } from "@/lib/functions";
 import { OPEN_AI } from "@/lib/variables";
 import { TestCase } from "@/types";
 import { NextResponse } from "next/server";
@@ -24,6 +24,7 @@ print(${functionName}(${input}))
 `.trim(); //cant indent this properly as it adds space and the runCodeOnPiston is not able to execute properly.
 
     const result = await runCodeOnPiston("python", testScript);
+    // const result = await runCodeOnJudge0("python", testScript);
 
     results.push({
       input,
