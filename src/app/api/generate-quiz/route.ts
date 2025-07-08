@@ -92,9 +92,6 @@ export async function POST(req: NextRequest) {
       Material:
       ${content}`;
 
-    //TODO
-    //1. the quesitons refresh randomly
-
     const codingQuestionPrompt = `Using the material below, generate two coding exercises based on the topic: ${topic}.
         Follow these rules carefully:
 

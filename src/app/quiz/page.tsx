@@ -208,7 +208,7 @@ export default function Home() {
             )}
           </div>
 
-          <button onClick={fetchQuestions} className={styles.button}>
+          <button className={styles.button}>
             Generate Quiz
           </button>
         </form>
@@ -359,7 +359,7 @@ export default function Home() {
               <p className={styles.loadingText}>Evaluating...</p>
             ) : (
               questions.length > 0 &&
-              !showResults && (
+              !showResults && questionType !== "code" && (
                 <button
                   onClick={textualQuizSubmit}
                   className={styles.submitButton}
@@ -374,22 +374,3 @@ export default function Home() {
     </div>
   );
 }
-
-//                 {showResults && q.explanation && (
-//                   <p>
-//                     <strong>Explanation:</strong> <em>{q.explanation}</em>
-//                   </p>
-//                 )}
-
-//                 {showResults && q.possibleCorrectAnswers?.length > 0 && (
-//                   <p>
-//                     <strong>Possible correct answers:</strong>
-//                     {q.possibleCorrectAnswers.map((ans, i) => (
-//                       <div key={i}>
-//                         <em>
-//                           {i + 1}. {ans}
-//                         </em>
-//                       </div>
-//                     ))}
-//                   </p>
-//                 )}
