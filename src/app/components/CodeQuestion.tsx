@@ -14,6 +14,7 @@ interface CodeQuestionProps {
   onRunCode: () => void;
   onSubmit: () => void;
   evaluationResult?: CodeEvaluationResult;
+  isEvaluating?: boolean;
 }
 
 const CodeQuestion: React.FC<CodeQuestionProps> = ({
@@ -25,6 +26,7 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
   onRunCode,
   onSubmit,
   evaluationResult,
+  isEvaluating
 }) => {
   const {
     question: title,
@@ -88,16 +90,11 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
         <pre>{output}</pre>
       </div>
 
+      {isEvaluating && <p className={styles.loadingText}>Evaluating...</p>}
+
       {evaluationResult && (
         <div className={styles.evaluationBlock}>
           <h2>Evaluation</h2>
-          {/* <p style={{ marginTop: 10, fontSize: 18 }}>
-            Passed {evaluationResult.passed} / {evaluationResult.total} test
-            cases
-          </p>
-          <p style={{ fontSize: 18, marginBottom: 10 }}>
-            Score: {(evaluationResult.score * 100).toFixed(0)}%
-          </p> */}
           <div className={styles.feedbackBlock}>
             <h3>Feedback</h3>
             <ReactMarkdown>{evaluationResult.feedback}</ReactMarkdown>

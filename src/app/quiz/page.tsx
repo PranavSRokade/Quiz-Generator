@@ -116,7 +116,7 @@ export default function Home() {
 
       const data = await res.json();
 
-      console.log('data', data);
+      console.log("data", data);
 
       setOutputMap((prev) => ({
         ...prev,
@@ -134,6 +134,8 @@ export default function Home() {
   };
 
   const handleSubmitCode = async (index: number) => {
+    setEvaluating(true);
+
     try {
       const res = await fetch("/api/evaluate-code", {
         method: "POST",
@@ -153,8 +155,11 @@ export default function Home() {
         ...prev,
         [index]: result,
       }));
+
+      setEvaluating(false);
     } catch (err) {
       console.error("Error evaluating code:", err);
+      setEvaluating(false);
     }
   };
 
@@ -208,9 +213,7 @@ export default function Home() {
             )}
           </div>
 
-          <button className={styles.button}>
-            Generate Quiz
-          </button>
+          <button className={styles.button}>Generate Quiz</button>
         </form>
 
         {loading ? (
@@ -281,6 +284,7 @@ export default function Home() {
                           onRunCode={() => handleRunCode(index)}
                           onSubmit={() => handleSubmitCode(index)}
                           evaluationResult={evaluations[index]}
+                          isEvaluating={evaluating}
                         />
                       );
 
@@ -359,7 +363,8 @@ export default function Home() {
               <p className={styles.loadingText}>Evaluating...</p>
             ) : (
               questions.length > 0 &&
-              !showResults && questionType !== "code" && (
+              !showResults &&
+              questionType !== "code" && (
                 <button
                   onClick={textualQuizSubmit}
                   className={styles.submitButton}
