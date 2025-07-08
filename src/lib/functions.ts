@@ -49,13 +49,18 @@ export async function runCodeOnPiston(language: string, code: string) {
       },
       body: JSON.stringify({
         language,
-        version: "3.10.0",
+        version:
+          language === "java"
+            ? "15.0.2"  
+            : language === "cpp"
+            ? "10.2.0"
+            : "3.10.0",
         files: [{ content: code }],
       }),
     });
 
     const data = await result.json();
-    console.log(data)
+    console.log(data);
 
     const stderr: string = data.run?.stderr || "";
     const stdout: string = data.run?.stdout || "";

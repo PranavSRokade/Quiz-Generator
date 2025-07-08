@@ -5,12 +5,12 @@ import CodeQuestion from "../components/CodeQuestion";
 import MCQQuestion from "../components/MCQQuestion";
 import TextQuestion from "../components/TextQuestion";
 import { CodeEvaluationResult, QuizQuestion } from "@/types";
-import { createPublicKey } from "crypto";
 
-//TODO: Remove test cases througout the code base
+//TODO : Add language option in code
+//TODO : Add two modules
+//TODO : Make the evaluation part a little less strict in textual question.
+
 export default function Home() {
-  // think how to add feedback
-
   //utility states
   const [loading, setLoading] = useState(false);
   const [evaluating, setEvaluating] = useState(false);
@@ -96,6 +96,7 @@ export default function Home() {
   };
 
   //code questions
+  const [language, setLanguage] = useState<string>("python");
   const [outputMap, setOutputMap] = useState<{ [key: number]: string }>({});
   const [evaluations, setEvaluations] = useState<CodeEvaluationResult[]>([]);
 
@@ -106,7 +107,7 @@ export default function Home() {
       const res = await fetch("/api/run-code", {
         method: "POST",
         body: JSON.stringify({
-          language: "python",
+          language: language,
           code,
         }),
         headers: {
@@ -146,6 +147,7 @@ export default function Home() {
           result: outputMap[index],
           functionName: questions[index].functionName,
           question: questions[index],
+          language: language,
         }),
       });
 
@@ -209,6 +211,23 @@ export default function Home() {
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
+              </select>
+            )}
+
+            {questionType === "code" && (
+              <select
+                // disabled={questions.length > 0}
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className={styles.select}
+              >
+                {" "}
+                <option value="" disabled hidden>
+                  Select Language
+                </option>
+                <option value="python">Python</option>
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
               </select>
             )}
           </div>
@@ -285,6 +304,7 @@ export default function Home() {
                           onSubmit={() => handleSubmitCode(index)}
                           evaluationResult={evaluations[index]}
                           isEvaluating={evaluating}
+                          language={language}
                         />
                       );
 

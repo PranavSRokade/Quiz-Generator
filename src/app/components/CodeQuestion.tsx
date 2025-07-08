@@ -15,6 +15,7 @@ interface CodeQuestionProps {
   onSubmit: () => void;
   evaluationResult?: CodeEvaluationResult;
   isEvaluating?: boolean;
+  language: string;
 }
 
 const CodeQuestion: React.FC<CodeQuestionProps> = ({
@@ -26,7 +27,8 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
   onRunCode,
   onSubmit,
   evaluationResult,
-  isEvaluating
+  isEvaluating,
+  language
 }) => {
   const {
     question: title,
@@ -70,7 +72,7 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
 
       <div className={styles.editorWrapper}>
         <CodeEditor
-          language="python"
+          language={language}
           value={userCode}
           onChange={(val) => onCodeChange(val || "")}
         />

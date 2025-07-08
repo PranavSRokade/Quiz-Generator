@@ -4,11 +4,11 @@ import { TestCase } from "@/types";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const { studentCode, question } = await req.json();
+  const { studentCode, question, language } = await req.json();
 
 
   const feedbackPrompt = `
-    You are a programming tutor. A student submitted the following code for a question.
+    You are a programming tutor. A student submitted the following code for a question in ${language} programming language.
 
     Question:
     ${question.question}

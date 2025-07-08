@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = await runCodeOnPiston("python", code);
+    const result = await runCodeOnPiston(language, code);
     // const result = await runCodeOnJudge0("python", code);
 
     return new NextResponse(

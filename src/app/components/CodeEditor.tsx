@@ -12,7 +12,7 @@ interface CodeEditorProps {
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
-  language = "javascript",
+  language = "python",
   value,
   onChange,
   height = "300px",
@@ -20,7 +20,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   return (
     <Editor
       height={height}
-      defaultLanguage={language}
+      language={language}
       defaultValue={value}
       value={value}
       theme="vs-dark"
