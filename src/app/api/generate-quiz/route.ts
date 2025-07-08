@@ -111,11 +111,6 @@ export async function POST(req: NextRequest) {
               "constraints": ["string", "string"],
               "starterCode": "string",
               "solutionCode": "string",
-              "testCases": [
-                { "input": "string", "expectedOutput": "string" },
-                { "input": "string", "expectedOutput": "string" },
-                { "input": "string", "expectedOutput": "string" }
-              ],
               "explanation": "string",
               "hint": "string",
               "type": "code",
@@ -130,10 +125,8 @@ export async function POST(req: NextRequest) {
         6. The starterCode should include a function definition with an empty body in Python.
         7. The solutionCode must be a correct working solution for the problem.
         8. The functionName should match the function name used in both starterCode and solutionCode.
-        9. The testCases should be sufficient to verify the solution correctness. Never include null values in test cases.
         10. Do not include any extra text outside the JSON response.
         11. Do not use emojis anywhere.
-        12. Test cases should use Python always, and should replace null with None.
 
         Material:
         ${content}`;

@@ -31,7 +31,6 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
     description,
     example,
     constraints,
-    testCases,
     hint,
     functionName,
   } = question;
@@ -103,41 +102,6 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
             <h3>Feedback</h3>
             <ReactMarkdown>{evaluationResult.feedback}</ReactMarkdown>
           </div>
-
-          {/* <div className={styles.testCaseDetailsBlock}>
-            <h3 style={{ display: "block", marginTop: 10, marginBottom: 10 }}>
-              Test Case Details
-            </h3>
-            <div>
-              {evaluationResult.results.map((test, i) => (
-                <div
-                  key={i}
-                  className={styles.exampleBlock}
-                  style={{ marginBottom: "1em" }}
-                >
-                  <strong>Test Case {i + 1}: </strong>
-                  <span
-                    className={
-                      test.passed
-                        ? styles.passedTestCase
-                        : styles.failedTestCase
-                    }
-                  >
-                    {test.passed ? "Passed" : "Failed"}
-                  </span>
-                  <div>
-                    <strong>Input:</strong> {test.input}
-                  </div>
-                  <div>
-                    <strong>Expected:</strong> {test.expected}
-                  </div>
-                  <div>
-                    <strong>Got:</strong> {test.actual}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div> */}
         </div>
       )}
     </div>

@@ -7,6 +7,7 @@ import TextQuestion from "../components/TextQuestion";
 import { CodeEvaluationResult, QuizQuestion } from "@/types";
 import { createPublicKey } from "crypto";
 
+//TODO: Remove test cases througout the code base
 export default function Home() {
   // think how to add feedback
 
@@ -141,7 +142,6 @@ export default function Home() {
           studentCode: textAnswers[index] || "",
           expected: questions[index].answer,
           result: outputMap[index],
-          testCases: questions[index].testCases,
           functionName: questions[index].functionName,
           question: questions[index],
         }),

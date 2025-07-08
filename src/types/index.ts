@@ -18,7 +18,6 @@ export interface QuizQuestion {
   // For code questions only
   description?: string;
   starterCode?: string;
-  testCases?: TestCase[];
   constraints?: string[];
   example?: string;
   functionName?: string;
