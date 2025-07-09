@@ -5,9 +5,10 @@ import CodeQuestion from "../components/CodeQuestion";
 import MCQQuestion from "../components/MCQQuestion";
 import TextQuestion from "../components/TextQuestion";
 import { CodeEvaluationResult, QuizQuestion } from "@/types";
+import { LANGUAGES, MODULES, QUESTION_TYPE } from "@/lib/variables";
 
-//TODO : Add language option in code
 //TODO : Add two modules
+//TODO : See if you can add another method to check if the input topic is actually a part of the PDF. If it increases the total time to generate the questions then skip.
 //TODO : Make the evaluation part a little less strict in textual question.
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
   const [evaluating, setEvaluating] = useState(false);
 
   //textual questions
+  const [module, setModule] = useState<MODULES>(MODULES.SOFTWARE_AND_FINANCE);
   const [topic, setTopic] = useState("");
   const [questionType, setQuestionType] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -40,7 +42,7 @@ export default function Home() {
     try {
       const res = await fetch("/api/generate-quiz", {
         method: "POST",
-        body: JSON.stringify({ topic, difficulty, questionType }),
+        body: JSON.stringify({ topic, difficulty, questionType, module }),
         headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
@@ -96,7 +98,7 @@ export default function Home() {
   };
 
   //code questions
-  const [language, setLanguage] = useState<string>("python");
+  const [language, setLanguage] = useState<LANGUAGES>(LANGUAGES.PYTHON);
   const [outputMap, setOutputMap] = useState<{ [key: number]: string }>({});
   const [evaluations, setEvaluations] = useState<CodeEvaluationResult[]>([]);
 
@@ -198,7 +200,7 @@ export default function Home() {
                 <option value="code">Code</option>
               </select>
             </div>
-            {questionType !== "code" && (
+            {questionType !== QUESTION_TYPE.CODE && (
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
@@ -214,11 +216,10 @@ export default function Home() {
               </select>
             )}
 
-            {questionType === "code" && (
+            {questionType === QUESTION_TYPE.CODE && (
               <select
-                // disabled={questions.length > 0}
                 value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                onChange={(e) => setLanguage(e.target.value as LANGUAGES)}
                 className={styles.select}
               >
                 {" "}
@@ -228,6 +229,26 @@ export default function Home() {
                 <option value="python">Python</option>
                 <option value="cpp">C++</option>
                 <option value="java">Java</option>
+              </select>
+            )}
+
+            {questionType !== QUESTION_TYPE.CODE && (
+              <select
+                value={module}
+                onChange={(e) => setModule(e.target.value as MODULES)}
+                className={styles.select}
+              >
+                {" "}
+                <option value="" disabled hidden>
+                  Select Module
+                </option>
+                <option value="suf">
+                  Software Engineering & Underlying Financial Technologies
+                </option>
+                <option value="sdmt">Software Measurement & Testing</option>
+                <option value="dlc">
+                  Distributed Ledgers & Cryptocurrencies
+                </option>
               </select>
             )}
           </div>
@@ -241,7 +262,7 @@ export default function Home() {
           <div className={styles.questionCardContainer}>
             {questions.map((q, index) => (
               <div key={index} className={styles.questionCard}>
-                {q.type !== "code" && (
+                {q.type !== QUESTION_TYPE.CODE && (
                   <p>
                     <strong>
                       {index + 1}. {q.question}
@@ -251,7 +272,7 @@ export default function Home() {
 
                 {(() => {
                   switch (q.type) {
-                    case "mcq":
+                    case QUESTION_TYPE.MCQ:
                       return (
                         q.options && (
                           <MCQQuestion
@@ -263,7 +284,7 @@ export default function Home() {
                         )
                       );
 
-                    case "short":
+                    case QUESTION_TYPE.SHORT:
                       return (
                         <TextQuestion
                           index={index}
@@ -275,7 +296,7 @@ export default function Home() {
                         />
                       );
 
-                    case "long":
+                    case QUESTION_TYPE.LONG:
                       return (
                         <TextQuestion
                           index={index}
@@ -287,7 +308,7 @@ export default function Home() {
                         />
                       );
 
-                    case "code":
+                    case QUESTION_TYPE.CODE:
                       return (
                         <CodeQuestion
                           questionNumber={index + 1}
@@ -331,7 +352,7 @@ export default function Home() {
 
                 {showResults && (
                   <div className={styles.feedback}>
-                    {q.type === "mcq" ? (
+                    {q.type === QUESTION_TYPE.MCQ ? (
                       <p
                         className={
                           selectedOptions[index] === q.answer
@@ -360,7 +381,7 @@ export default function Home() {
                       <strong>Explaination:</strong> <em>{q.explanation}</em>
                     </p>
 
-                    {q.type !== "mcq" && (
+                    {q.type !== QUESTION_TYPE.MCQ && (
                       <p>
                         <br />
                         <strong>
@@ -384,7 +405,7 @@ export default function Home() {
             ) : (
               questions.length > 0 &&
               !showResults &&
-              questionType !== "code" && (
+              questionType !== QUESTION_TYPE.CODE && (
                 <button
                   onClick={textualQuizSubmit}
                   className={styles.submitButton}

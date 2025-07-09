@@ -1,23 +1,27 @@
 import { extractAllPDFText, filterTextByTopic } from "@/lib/functions";
-import { OPEN_AI } from "@/lib/variables";
 import { NextRequest, NextResponse } from "next/server";
+import OpenAI from "openai";
+
+const OPEN_AI = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function POST(req: NextRequest) {
   try {
-    const { topic, difficulty, questionType } = await req.json();
+    const { topic, difficulty, questionType, module } = await req.json();
 
     if (!topic) {
       return NextResponse.json({ error: "Topic is required" }, { status: 400 });
     }
 
-    const unfilteredContent = await extractAllPDFText(questionType);
+    const unfilteredContent = await extractAllPDFText(questionType, module);
 
     const filteredContent = filterTextByTopic(unfilteredContent, topic);
 
     const content =
       questionType === "code" ? filteredContent : unfilteredContent;
 
-    const mcqPrompt = `Using the material below, generate quiz questions about: ${topic}.
+    const mcqPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${module}.
 
                     Following are various rules.
 
@@ -42,7 +46,7 @@ export async function POST(req: NextRequest) {
                     Material:
                     ${content}`;
 
-    const shortAnswerPrompt = `Using the material below, generate quiz questions about: ${topic}.
+    const shortAnswerPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${module}.
       Following are various rules:
 
       1. Generate only ${difficulty}-level **short-answer** questions. These questions should require a concise, precise response that tests understanding and recall without guessing.
@@ -66,7 +70,7 @@ export async function POST(req: NextRequest) {
       Material:
       ${content}`;
 
-    const longAnswerPrompt = `Using the material below, generate quiz questions about: ${topic}.
+    const longAnswerPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${module}.
 
       Following are various rules:
 

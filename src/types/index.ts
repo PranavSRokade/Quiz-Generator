@@ -1,3 +1,5 @@
+import { QUESTION_TYPE } from "@/lib/variables";
+
 export interface TestCase {
   input: string;
   expectedOutput: string;
@@ -5,7 +7,7 @@ export interface TestCase {
 
 export interface QuizQuestion {
   // Common
-  type: "mcq" | "short" | "long" | "code";
+  type: QUESTION_TYPE;
   question: string; // For mcq/short/long: actual question | For code: title
   answer: string; // For mcq/short/long: correct answer | For code: full solution code
   explanation: string;
@@ -35,3 +37,4 @@ export interface CodeEvaluationResult {
     passed: boolean;
   }[];
 }
+

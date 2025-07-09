@@ -1,8 +1,10 @@
-import { delay, runCodeOnJudge0, runCodeOnPiston } from "@/lib/functions";
-import { OPEN_AI } from "@/lib/variables";
-import { TestCase } from "@/types";
-import { NextResponse } from "next/server";
+import { extractAllPDFText, filterTextByTopic } from "@/lib/functions";
+import { NextRequest, NextResponse } from "next/server";
+import OpenAI from "openai";
 
+const OPEN_AI = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 export async function POST(req: Request) {
   const { studentCode, question, language } = await req.json();
 

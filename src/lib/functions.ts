@@ -2,10 +2,28 @@ import fs from "fs/promises";
 import { NextResponse } from "next/server";
 import path from "path";
 import pdf from "pdf-parse";
-import { DLC_FOLDER, DSA_FOLDER } from "./variables";
+import {
+  DLC_FOLDER,
+  DSA_FOLDER,
+  MODULES,
+  SDMT_FOLDER,
+  SUF_FOLDER,
+} from "./variables";
 
-export async function extractAllPDFText(questionType: string): Promise<string> {
-  const pdfFolder = questionType === "code" ? DSA_FOLDER : DLC_FOLDER;
+export async function extractAllPDFText(
+  questionType: string,
+  module: MODULES
+): Promise<string> {
+  const pdfFolder =
+    questionType === "code"
+      ? DSA_FOLDER
+      : module === MODULES.DISTRIBUTED_LEDGERS
+      ? DLC_FOLDER
+      : module === MODULES.SOFTWARE_AND_FINANCE
+      ? SUF_FOLDER
+      : module === MODULES.SOFTWARE_MEASUREMENT_TESTING
+      ? SDMT_FOLDER
+      : SDMT_FOLDER;
 
   try {
     const files = await fs.readdir(pdfFolder);
@@ -51,7 +69,7 @@ export async function runCodeOnPiston(language: string, code: string) {
         language,
         version:
           language === "java"
-            ? "15.0.2"  
+            ? "15.0.2"
             : language === "cpp"
             ? "10.2.0"
             : "3.10.0",
