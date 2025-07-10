@@ -10,16 +10,30 @@ export async function POST(req: NextRequest) {
   try {
     const { topic, difficulty, questionType, module } = await req.json();
 
+    const origin = req.headers.get("origin") || "http://localhost:3000";
+
     if (!topic) {
       return NextResponse.json({ error: "Topic is required" }, { status: 400 });
     }
 
     const unfilteredContent = await extractAllPDFText(questionType, module);
 
-    const filteredContent = filterTextByTopic(unfilteredContent, topic);
+    const filteredContent = await filterTextByTopic(
+      unfilteredContent,
+      topic,
+      origin
+    );
 
-    const content =
-      questionType === "code" ? filteredContent : unfilteredContent;
+    if (filteredContent === "No relevant content found.") {
+      return NextResponse.json(
+        {
+          error: `The topic "${topic}" was not found in the selected module "${module}". Please check your spelling, try a related topic, or select a different module.`,
+        },
+        { status: 404 }
+      );
+    }
+
+    const content = filteredContent;
 
     const mcqPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${module}.
 

@@ -9,6 +9,10 @@ import {
   SDMT_FOLDER,
   SUF_FOLDER,
 } from "./variables";
+import Fuse from "fuse.js";
+import OpenAI from "openai";
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function extractAllPDFText(
   questionType: string,
@@ -43,16 +47,86 @@ export async function extractAllPDFText(
   }
 }
 
-export function filterTextByTopic(fullText: string, topic: string): string {
-  const lowerTopic = topic.toLowerCase();
+export async function filterTextByTopic(
+  fullText: string,
+  topic: string,
+  origin: string
+): Promise<string> {
+  // const lowerTopic = topic.toLowerCase();
 
-  const sections = fullText.split(/\n{2,}/);
+  // const sections = fullText.split(/\n{2,}/);
 
-  const relevantSections = sections.filter((sec) =>
-    sec.toLowerCase().includes(lowerTopic)
-  );
+  // const relevantSections = sections.filter((sec) =>
+  //   sec.toLowerCase().includes(lowerTopic)
+  // );
 
-  return relevantSections.slice(0, 10).join("\n\n");
+  // return relevantSections.slice(0, 10).join("\n\n");
+  // --------------------------------------------------
+  // const sections = fullText.split(/\n{2,}/);
+
+  // const fuse = new Fuse(sections, {
+  //   includeScore: true,
+  //   threshold: 0.1,
+  // });
+
+  // const results = fuse.search(topic);
+
+  // return results
+  //   .slice(0, 10)
+  //   .map((res) => res.item)
+  //   .join("\n\n");
+  // --------------------------------------------------
+  // const sections = fullText.split(/\n{2,}/);
+
+  // const inputs = [topic, ...sections];
+
+  // const response = await openai.embeddings.create({
+  //   model: "text-embedding-3-small",
+  //   input: inputs,
+  // });
+
+  // const [topicEmbedding, ...sectionEmbeddings] = response.data.map((d) => d.embedding);
+
+  // const scoredSections = sections.map((text, i) => ({
+  //   text,
+  //   score: cosineSimilarity(topicEmbedding, sectionEmbeddings[i]),
+  // }));
+
+  // const topSections = scoredSections
+  //   .sort((a, b) => b.score - a.score)
+  //   .slice(0, 10)
+  //   .map((s) => s.text);
+
+  // return topSections.join("\n\n");
+  //---------------------------------------------------
+
+  try {
+    const response = await fetch(`${origin}/api/filter-text`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ topic, fullText }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to filter text");
+    }
+
+    return data.filteredText;
+  } catch (error) {
+    console.error("Error filtering text:", error);
+    return "";
+  }
+}
+
+export function cosineSimilarity(vecA: number[], vecB: number[]): number {
+  const dot = vecA.reduce((acc, val, i) => acc + val * vecB[i], 0);
+  const magA = Math.sqrt(vecA.reduce((acc, val) => acc + val * val, 0));
+  const magB = Math.sqrt(vecB.reduce((acc, val) => acc + val * val, 0));
+  return dot / (magA * magB);
 }
 
 export async function runCodeOnPiston(language: string, code: string) {

@@ -7,7 +7,6 @@ import TextQuestion from "../components/TextQuestion";
 import { CodeEvaluationResult, QuizQuestion } from "@/types";
 import { LANGUAGES, MODULES, QUESTION_TYPE } from "@/lib/variables";
 
-//TODO : Add two modules
 //TODO : See if you can add another method to check if the input topic is actually a part of the PDF. If it increases the total time to generate the questions then skip.
 //TODO : Make the evaluation part a little less strict in textual question.
 
@@ -21,6 +20,7 @@ export default function Home() {
   const [topic, setTopic] = useState("");
   const [questionType, setQuestionType] = useState("");
   const [difficulty, setDifficulty] = useState("");
+  const [error, setError] = useState<string>("");
 
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<{
@@ -38,6 +38,8 @@ export default function Home() {
     setTextAnswers([]);
     setOutputMap([]);
     setEvaluations([]);
+    setQuestions([]);
+    setError("")
 
     try {
       const res = await fetch("/api/generate-quiz", {
@@ -46,6 +48,12 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
+      if (data.error) {
+        setLoading(false);
+        setError(data.error);
+        return;
+      }
+
       setQuestions(data.parsed.questions);
     } catch (error) {
       console.error("Failed to fetch questions:", error);
@@ -258,6 +266,8 @@ export default function Home() {
 
         {loading ? (
           <p className={styles.loadingText}>Loading...</p>
+        ) : error !== "" ? (
+          <p className={styles.loadingText}>{error}</p>
         ) : questions && questions.length > 0 ? (
           <div className={styles.questionCardContainer}>
             {questions.map((q, index) => (
