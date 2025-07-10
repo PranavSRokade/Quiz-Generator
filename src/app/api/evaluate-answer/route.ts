@@ -10,25 +10,39 @@ export async function POST(req: NextRequest) {
   const { expectedAnswer, studentAnswer } = await req.json();
 
   const prompt = `
-                  You are an educational assistant. Evaluate the following student answer based on the expected answer.
-                  Provide a score between 0 and 1 where:
-                  - 1 = completely correct
-                  - 0 = completely incorrect
+  You are an educational assistant evaluating student answers.
 
-                  Also provide a short 1-sentence explanation of the feedback.
+  Your goal is to assess how well the student's answer shows the core meaning, intent, and conceptual understanding of the expected answer even if it is expressed differently.
 
-                  Expected Answer:
-                  ${expectedAnswer}
+  Score generously, and be flexible with:
+  - Rewording, synonyms, or paraphrased ideas
+  - Different valid explanations that reach the same conclusion
+  - Partial but thoughtful understanding of key ideas
+  - Small inaccuracies that don’t significantly change the meaning
 
-                  Student Answer:
-                  ${studentAnswer}
+  Only reduce the score if:
+  - Key concepts are missing
+  - The student misunderstood or contradicted the core idea
+  - The explanation is mostly unrelated or off-topic
 
-                  Respond in JSON like:
-                  {
-                    "score": 0.75,
-                    "feedback": "The answer is mostly correct but missed a key detail about X."
-                  }
-                  `;
+  Give a score between 0 and 1:
+  - 1 = answer demonstrates the intended idea clearly (even if differently worded)
+  - 0 = answer is entirely unrelated or incorrect
+
+  Also provide a short, kind, one-sentence feedback that helps the student understand what was good and what could be better.
+
+  Expected Answer:
+  ${expectedAnswer}
+
+  Student Answer:
+  ${studentAnswer}
+
+  Respond ONLY in this strict JSON format:
+  {
+    "score": number between 0 and 1,
+    "feedback": "short one-line explanation"
+  }
+  `;
 
   const completion = await OPEN_AI.chat.completions.create({
     model: "gpt-4",

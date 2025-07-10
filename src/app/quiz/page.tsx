@@ -7,9 +7,6 @@ import TextQuestion from "../components/TextQuestion";
 import { CodeEvaluationResult, QuizQuestion } from "@/types";
 import { LANGUAGES, MODULES, QUESTION_TYPE } from "@/lib/variables";
 
-//TODO : See if you can add another method to check if the input topic is actually a part of the PDF. If it increases the total time to generate the questions then skip.
-//TODO : Make the evaluation part a little less strict in textual question.
-
 export default function Home() {
   //utility states
   const [loading, setLoading] = useState(false);

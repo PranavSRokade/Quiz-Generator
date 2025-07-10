@@ -37,9 +37,9 @@ export async function POST(req: NextRequest) {
 
     const mcqPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${module}.
 
-                    Following are various rules.
+                    Following are various rules:
 
-                    1. Generate only ${difficulty}-level multiple-choice questions. The difficulty should reflect the complexity of the question wording, required understanding, and depth of explanation.
+                    1. Generate only ${difficulty} level multiple-choice questions. The difficulty should reflect the complexity of the question wording, required understanding, and depth of explanation.
                     2. Make sure each question includes a hint to help the user before they answer, but NEVER gives away the correct answer.
                     3. Respond ONLY in the following JSON format:
                     {
@@ -63,8 +63,8 @@ export async function POST(req: NextRequest) {
     const shortAnswerPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${module}.
       Following are various rules:
 
-      1. Generate only ${difficulty}-level **short-answer** questions. These questions should require a concise, precise response that tests understanding and recall without guessing.
-      2. Each question must include a hint that guides the learner toward the answer, but NEVER reveals or directly implies the correct answer.
+      1. Generate only ${difficulty} level short-answer questions. These questions should require a concise, precise response that tests understanding and recall without guessing.
+      2. Make sure each question includes a hint to help the user before they answer, but NEVER gives away the correct answer.
       3. Respond ONLY in the following JSON format:
       {
         "questions": [
@@ -78,8 +78,8 @@ export async function POST(req: NextRequest) {
           }
         ]
       }
-      4. Do not use any emojis anywhere.
-      5. The answer should be accurate and brief — typically one sentence or phrase. Avoid ambiguous or overly broad answers.
+      4. Do not use any emojies anywhere.
+      5. The answer should be accurate and brief, typically one sentence or phrase. Avoid vague or overly broad answers.
 
       Material:
       ${content}`;
@@ -88,8 +88,8 @@ export async function POST(req: NextRequest) {
 
       Following are various rules:
 
-      1. Generate only ${difficulty}-level **long-answer** questions. These should encourage deeper reflection, explanation, or analysis and require answers typically longer than a few sentences.
-      2. Each question must include a hint that provides direction on how to approach or frame the response, without giving away key points or the correct answer.
+      1. Generate only ${difficulty} level long-answer questions. These should encourage deeper reflection, explanation, or analysis and require answers typically longer than a few sentences.
+      2. Make sure each question includes a hint to help the user before they answer, but NEVER gives away the correct answer.
       3. Respond ONLY in the following JSON format:
       {
         "questions": [
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
           }
         ]
       }
-      4. Do not use any emojis anywhere.
+      4. Do not use any emojies anywhere.
       5. The answer field should include a sample high-quality response that a well-informed learner might write, demonstrating clarity, structure, and depth.
 
       Material:
@@ -124,8 +124,6 @@ export async function POST(req: NextRequest) {
               "description": "string", 
               "example": "string", 
               "constraints": ["string", "string"],
-              "starterCode": "string",
-              "solutionCode": "string",
               "explanation": "string",
               "hint": "string",
               "type": "code",
@@ -137,11 +135,9 @@ export async function POST(req: NextRequest) {
         3. The description should clearly explain the task and what the user is expected to implement.
         4. The example should show one clear input/output pair. Never include null values in example. For data structures like binary trees or linked lists, represent inputs as serialized arrays or strings (e.g., "[1, 2, 3, null, 4]") instead of raw object constructors.
         5. The constraints should include realistic conditions or limits (e.g., array length, input size).
-        6. The starterCode should include a function definition with an empty body in Python.
-        7. The solutionCode must be a correct working solution for the problem.
-        8. The functionName should match the function name used in both starterCode and solutionCode.
-        10. Do not include any extra text outside the JSON response.
-        11. Do not use emojis anywhere.
+        6. Do not include any extra text outside the JSON response.
+        7. Do not use emojies anywhere.
+        8. Each question must include a helpful hint that guides the learner in the right direction without revealing the answer.
 
         Material:
         ${content}`;

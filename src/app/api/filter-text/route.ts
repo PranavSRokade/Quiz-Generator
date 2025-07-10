@@ -15,13 +15,30 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    const prompt = `
+You are an assistant that extracts relevant paragraphs from educational material.
 
-    const prompt = `You will be given educational material. Your task is to extract only the paragraphs that are specifically relevant to the topic: "${topic}". 
-Return only the relevant paragraphs clearly separated by new lines.
-If no paragraphs are relevant, respond clearly with: "No relevant content found.".
+Given the topic: "${topic}", find all paragraphs that are related to this topic.
+
+- Return only paragraphs that mention or explain the topic.
+- Separate paragraphs with two new lines.
+- If no paragraph clearly relates to the topic, respond exactly with: "No relevant content found."
+
+Example:
+
+Topic: Photosynthesis
+Material:
+Photosynthesis is the process by which plants make food.
+It happens in the leaves.
+The mitochondria is the powerhouse of the cell.
+
+Relevant paragraphs:
+Photosynthesis is the process by which plants make food.
+It happens in the leaves.
 
 Material:
-${fullText}`;
+${fullText}
+`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -40,7 +57,7 @@ ${fullText}`;
     });
 
     const responseText = completion.choices[0].message.content?.trim() || "";
-
+    console.log("responseText", responseText);
     return NextResponse.json({
       filteredText: responseText,
     });
