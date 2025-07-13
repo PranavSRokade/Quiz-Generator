@@ -25,6 +25,7 @@ export interface QuizQuestion {
   functionName?: string;
 }
 
+//Piotr's Endpoint
 export interface CodeEvaluationResult {
   passed: number;
   total: number;
@@ -38,3 +39,49 @@ export interface CodeEvaluationResult {
   }[];
 }
 
+export interface Course {
+  course_id: string;
+  course_title: string;
+}
+
+export interface Lecture {
+  lecture_id: string;
+  lecture_title: string;
+}
+
+export interface Timestamp {
+  start: string;
+  end: string;
+}
+
+export interface Document {
+  id: string;
+  doc_id: string;
+  content: string;
+  timestamp: Timestamp;
+  page_number: number;
+  lecture_id: string;
+  lecture_title: string;
+  course_id: string;
+  course_name: string;
+  doc_type: string;
+  url: string;
+  thumbnail_url: string;
+}
+
+export interface SearchResult {
+  document: Document;
+  score: number;
+}
+
+export interface LectureFile {
+  doc_id: string;
+  doc_type: string;
+  url: string;
+  thumbnail_url: string;
+}
+
+export interface LectureFiles {
+  lecture: string;
+  files: LectureFile[];
+}

@@ -32,7 +32,7 @@
 }
 
 .main {
-  max-width: 800px;
+
   margin: 0 auto;
   background: #fff;
   padding: 2rem;
@@ -91,6 +91,31 @@
   color: #444;
 }
 
+.feedbackBlock {
+  background-color: #f9f9f9;
+  border-left: 4px solid #4caf50;
+  border-top: 1px solid #4caf50;
+  padding: 16px 24px;
+  margin-top: 12px;
+  font-style: normal;
+  color: #333;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.feedbackBlock ol {
+  padding-left: 40px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.feedbackBlock ol li {
+  margin-bottom: 6px;
+}
+
 .submitButton {
   display: block;
   width: 100%;
@@ -129,9 +154,42 @@
   margin-top: 20px;
 }
 
+.testCaseDetailsBlock {
+  background-color: #f9f9f9;
+  border-left: 4px solid #9b4d2b;
+  border-top: 1px solid #9b4d2b;
+  padding: 16px 24px;
+  margin-top: 12px;
+  font-style: normal;
+  color: #333;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.testCaseDetailsBlock ol {
+  padding-left: 0px;
+  margin-left: 0;
+  list-style-position: inside;
+}
+
+.passedTestCase {
+  font-weight: bold;
+  color: green;
+  margin-bottom: 20px;
+}
+
+.failedTestCase {
+  font-weight: bold;
+  color: red;
+  margin-bottom: 20px;
+}
+
 .inputContainer {
   display: flex;
-  gap: 1rem; /* space between input and select */
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 .select {
@@ -185,7 +243,7 @@
   max-width: 900px;
   margin: 2rem auto;
   color: #1e1e1e;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .questionTitle {
@@ -210,7 +268,7 @@
 
 .exampleBlock pre,
 .outputBlock pre {
-  background-color: #f5f5f5;
+  background-color: #0502024d;
   padding: 1rem;
   border-radius: 8px;
   font-family: "Courier New", monospace;
@@ -276,5 +334,16 @@
 .outputBlock h3 {
   font-size: 1.1rem;
   font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.functionName strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.functionName code {
+  font-size: 1.1rem;
   margin-bottom: 0.5rem;
 }
