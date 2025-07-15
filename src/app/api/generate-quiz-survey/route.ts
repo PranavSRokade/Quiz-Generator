@@ -1,8 +1,6 @@
+import { extractAllPDFText, filterTextByTopic } from "@/lib/functions";
 import { NextRequest, NextResponse } from "next/server";
-import { SearchResult } from "@/types";
 import OpenAI from "openai";
-
-//integreate embediing models and use it for dsa module and test the code part as well
 
 const OPEN_AI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -10,52 +8,34 @@ const OPEN_AI = new OpenAI({
 
 export async function POST(req: NextRequest) {
   try {
-    const { topic, difficulty, questionType, course } = await req.json();
+    const { topic, difficulty, questionType, module } = await req.json();
+
+    const origin = req.headers.get("origin") || "http://localhost:3000";
 
     if (!topic) {
       return NextResponse.json({ error: "Topic is required" }, { status: 400 });
     }
 
-    const searchResponse = await fetch("http://46.101.49.168/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: {
-          question: topic,
-        },
-        filters: {
-          courses_ids: [course.course_id],
-        },
-      }),
-    });
+    const unfilteredContent = await extractAllPDFText(questionType, module);
 
-    if (!searchResponse.ok) {
-      return NextResponse.json(
-        { error: "Failed to search for relevant content" },
-        { status: 500 }
-      );
-    }
+    const filteredContent = await filterTextByTopic(
+      unfilteredContent,
+      topic,
+      origin
+    );
 
-    const searchResults: SearchResult[] = await searchResponse.json();
-
-    if (!searchResults || searchResults.length === 0) {
+    if (filteredContent === "No relevant content found.") {
       return NextResponse.json(
         {
-          error: `The topic "${topic}" was not found in the selected module "${course.course_title}". Please check your spelling, try a related topic, or select a different module.`,
+          error: `The topic "${topic}" was not found in the selected module "${module}". Please check your spelling, try a related topic, or select a different module.`,
         },
         { status: 404 }
       );
     }
 
-    const content = searchResults
-      .map((result) => result.document.content)
-      .join("\n\n");
+    const content = filteredContent;
 
-    console.log("content", content.length);
-
-    const mcqPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${course}.
+    const mcqPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${module}.
 
                     Following are various rules:
 
@@ -80,7 +60,7 @@ export async function POST(req: NextRequest) {
                     Material:
                     ${content}`;
 
-    const shortAnswerPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${course.course_id}.
+    const shortAnswerPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${module}.
       Following are various rules:
 
       1. Generate only ${difficulty} level short-answer questions. These questions should require a concise, precise response that tests understanding and recall without guessing.
@@ -104,7 +84,7 @@ export async function POST(req: NextRequest) {
       Material:
       ${content}`;
 
-    const longAnswerPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${course.course_id}.
+    const longAnswerPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${module}.
 
       Following are various rules:
 

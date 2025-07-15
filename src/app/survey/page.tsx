@@ -39,7 +39,7 @@ export default function Home() {
     setError("")
 
     try {
-      const res = await fetch("/api/generate-quiz", {
+      const res = await fetch("/api/generate-quiz-survey", {
         method: "POST",
         body: JSON.stringify({ topic, difficulty, questionType, module }),
         headers: { "Content-Type": "application/json" },

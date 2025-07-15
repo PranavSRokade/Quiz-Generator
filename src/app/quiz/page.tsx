@@ -1,10 +1,10 @@
 "use client";
 import styles from "./quiz.module.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CodeQuestion from "../components/CodeQuestion";
 import MCQQuestion from "../components/MCQQuestion";
 import TextQuestion from "../components/TextQuestion";
-import { CodeEvaluationResult, QuizQuestion } from "@/types";
+import { CodeEvaluationResult, QuizQuestion, Course } from "@/types";
 import { LANGUAGES, MODULES, QUESTION_TYPE } from "@/lib/variables";
 
 export default function Home() {
@@ -13,20 +13,49 @@ export default function Home() {
   const [evaluating, setEvaluating] = useState(false);
 
   //textual questions
-  const [module, setModule] = useState<MODULES>(MODULES.SOFTWARE_AND_FINANCE);
+  const [selectedCourse, setSelectedCourse] = useState<Course>();
   const [topic, setTopic] = useState("");
   const [questionType, setQuestionType] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [error, setError] = useState<string>("");
+
+  // Dynamic courses state
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [coursesLoading, setCoursesLoading] = useState<boolean>(false);
 
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: number]: string;
   }>({});
   const [textAnswers, setTextAnswers] = useState<{ [key: number]: string }>({});
+  const [validationErrors, setValidationErrors] = useState<{ [key: number]: boolean }>({});
 
   const [showResults, setShowResults] = useState(false);
   const [showHints, setShowHints] = useState<{ [key: number]: boolean }>({});
+
+  const fetchCourses = async () => {
+    setCoursesLoading(true);
+
+    try {
+      const response = await fetch("/api/get-courses", {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setCourses(data);
+    } catch (error) {
+      console.error("Failed to fetch courses:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to fetch courses"
+      );
+    } finally {
+      setCoursesLoading(false);
+    }
+  };
 
   const fetchQuestions = async () => {
     setLoading(true);
@@ -36,12 +65,19 @@ export default function Home() {
     setOutputMap([]);
     setEvaluations([]);
     setQuestions([]);
-    setError("")
+    setShowHints({});
+    setError("");
+    setValidationErrors({});
 
     try {
       const res = await fetch("/api/generate-quiz", {
         method: "POST",
-        body: JSON.stringify({ topic, difficulty, questionType, module }),
+        body: JSON.stringify({
+          topic,
+          difficulty,
+          questionType,
+          course: selectedCourse,
+        }),
         headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
@@ -90,9 +126,32 @@ export default function Home() {
 
   const mcqOptionChange = (questionIndex: number, option: string) => {
     setSelectedOptions({ ...selectedOptions, [questionIndex]: option });
+    setValidationErrors((prev) => ({ ...prev, [questionIndex]: false }));
   };
 
   const textualQuizSubmit = async () => {
+    const newValidationErrors: { [key: number]: boolean } = {};
+    let hasErrors = false;
+
+    questions.forEach((q, index) => {
+      if (q.type === "mcq" && !selectedOptions[index]) {
+        newValidationErrors[index] = true;
+        hasErrors = true;
+      } else if (
+        (q.type === "long" || q.type === "short") &&
+        (!textAnswers[index] || textAnswers[index].trim() === "")
+      ) {
+        newValidationErrors[index] = true;
+        hasErrors = true;
+      }
+    });
+
+    setValidationErrors(newValidationErrors);
+
+    if (hasErrors) {
+      return;
+    }
+
     setEvaluating(true);
 
     const evaluations = await evaluateWrittenAnswers();
@@ -172,6 +231,10 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -239,21 +302,26 @@ export default function Home() {
 
             {questionType !== QUESTION_TYPE.CODE && (
               <select
-                value={module}
-                onChange={(e) => setModule(e.target.value as MODULES)}
+                value={selectedCourse?.course_id || ""}
+                onChange={(e) =>
+                  setSelectedCourse(
+                    courses.find(
+                      (course) => course.course_id === e.target.value
+                    )
+                  )
+                }
                 className={styles.select}
+                disabled={coursesLoading}
               >
                 {" "}
                 <option value="" disabled hidden>
-                  Select Module
+                  {coursesLoading ? "Loading modules..." : "Select Module"}
                 </option>
-                <option value="suf">
-                  Software Engineering & Underlying Financial Technologies
-                </option>
-                <option value="sdmt">Software Measurement & Testing</option>
-                <option value="dlc">
-                  Distributed Ledgers & Cryptocurrencies
-                </option>
+                {courses.map((course) => (
+                  <option key={course.course_id} value={course.course_id}>
+                    {course.course_title}
+                  </option>
+                ))}
               </select>
             )}
           </div>
@@ -287,6 +355,7 @@ export default function Home() {
                             index={index}
                             selectedOption={selectedOptions[index]}
                             onChange={mcqOptionChange}
+                            hasValidationError={validationErrors[index] || false}
                           />
                         )
                       );
@@ -297,9 +366,11 @@ export default function Home() {
                           index={index}
                           value={textAnswers[index] || ""}
                           type={q.type}
-                          onChange={(i, val) =>
-                            setTextAnswers((prev) => ({ ...prev, [i]: val }))
-                          }
+                          hasValidationError={validationErrors[index] || false}
+                          onChange={(i, val) => {
+                            setTextAnswers((prev) => ({ ...prev, [i]: val }));
+                            setValidationErrors((prev) => ({ ...prev, [i]: false }));
+                          }}
                         />
                       );
 
@@ -309,9 +380,11 @@ export default function Home() {
                           index={index}
                           value={textAnswers[index] || ""}
                           type={q.type}
-                          onChange={(i, val) =>
-                            setTextAnswers((prev) => ({ ...prev, [i]: val }))
-                          }
+                          hasValidationError={validationErrors[index] || false}
+                          onChange={(i, val) => {
+                            setTextAnswers((prev) => ({ ...prev, [i]: val }));
+                            setValidationErrors((prev) => ({ ...prev, [i]: false }));
+                          }}
                         />
                       );
 

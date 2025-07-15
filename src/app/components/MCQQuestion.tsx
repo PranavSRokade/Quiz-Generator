@@ -9,6 +9,7 @@ interface Props {
   index: number;
   selectedOption: string;
   onChange: (index: number, option: string) => void;
+  hasValidationError?: boolean;
 }
 
 const MCQQuestion: React.FC<Props> = ({
@@ -16,9 +17,10 @@ const MCQQuestion: React.FC<Props> = ({
   index,
   selectedOption,
   onChange,
+  hasValidationError = false,
 }) => {
   return (
-    <>
+    <div className={`${styles.mcqContainer} ${hasValidationError ? styles.mcqContainerError : ''}`}>
       {q.options?.map((option, i) => (
         <div key={i} className={styles.optionWrapper}>
           <label className={styles.optionLabel}>
@@ -33,7 +35,7 @@ const MCQQuestion: React.FC<Props> = ({
           </label>
         </div>
       ))}
-    </>
+    </div>
   );
 };
 

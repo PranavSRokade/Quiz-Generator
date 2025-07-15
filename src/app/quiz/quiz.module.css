@@ -24,6 +24,19 @@
   color: #000000;
   resize: none;
 }
+
+.textAreaError {
+  border: 2px solid #ff4444;
+}
+
+.mcqContainer {
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.mcqContainerError {
+  border: 2px solid #ff4444;
+}
 .page {
   min-height: 100vh;
   padding: 2rem;

@@ -57,7 +57,6 @@ ${fullText}
     });
 
     const responseText = completion.choices[0].message.content?.trim() || "";
-    console.log("responseText", responseText);
     return NextResponse.json({
       filteredText: responseText,
     });
