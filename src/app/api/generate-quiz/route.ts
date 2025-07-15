@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SearchResult } from "@/types";
 import OpenAI from "openai";
+import { extractAllPDFText, filterTextByTopic } from "@/lib/functions";
+import { MODULES, QUESTION_TYPE } from "@/lib/variables";
 
 const OPEN_AI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -14,44 +16,69 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Topic is required" }, { status: 400 });
     }
 
-    const searchResponse = await fetch("http://46.101.49.168/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: {
-          question: topic,
-        },
-        filters: {
-          courses_ids: [course.course_id],
-        },
-      }),
-    });
+    let content: string;
 
-    if (!searchResponse.ok) {
-      return NextResponse.json(
-        { error: "Failed to search for relevant content" },
-        { status: 500 }
-      );
+    if (questionType === QUESTION_TYPE.CODE) {
+      try {
+        const fullText = await extractAllPDFText(QUESTION_TYPE.CODE, MODULES.DATA_STRUCTURE_ALGORITHM);
+        
+        const filteredContent = await filterTextByTopic(fullText, topic);
+        
+        if (filteredContent === "No relevant content found") {
+          return NextResponse.json(
+            {
+              error: `The topic "${topic}" was not found in the Data Structures and Algorithm module. Please check your spelling or try a related topic.`,
+            },
+            { status: 404 }
+          );
+        }
+        
+        content = filteredContent;
+      } catch (error) {
+        console.error("Error processing DSA content:", error);
+        return NextResponse.json(
+          { error: "Failed to process DSA content" },
+          { status: 500 }
+        );
+      }
+    } else {
+      const searchResponse = await fetch("http://46.101.49.168/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: {
+            question: topic,
+          },
+          filters: {
+            courses_ids: [course.course_id],
+          },
+        }),
+      });
+
+      if (!searchResponse.ok) {
+        return NextResponse.json(
+          { error: "Failed to search for relevant content" },
+          { status: 500 }
+        );
+      }
+
+      const searchResults: SearchResult[] = await searchResponse.json();
+
+      if (!searchResults || searchResults.length === 0) {
+        return NextResponse.json(
+          {
+            error: `The topic "${topic}" was not found in the selected module "${course.course_title}". Please check your spelling, try a related topic, or select a different module.`,
+          },
+          { status: 404 }
+        );
+      }
+
+      content = searchResults
+        .map((result) => result.document.content)
+        .join("\n\n");
     }
-
-    const searchResults: SearchResult[] = await searchResponse.json();
-
-    if (!searchResults || searchResults.length === 0) {
-      return NextResponse.json(
-        {
-          error: `The topic "${topic}" was not found in the selected module "${course.course_title}". Please check your spelling, try a related topic, or select a different module.`,
-        },
-        { status: 404 }
-      );
-    }
-
-    const content = searchResults
-      .map((result) => result.document.content)
-      .join("\n\n");
-
-    console.log("content", content.length);
 
     const mcqPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${course}.
 

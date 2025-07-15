@@ -50,59 +50,49 @@ export async function extractAllPDFText(
 export async function filterTextByTopic(
   fullText: string,
   topic: string,
-  origin: string
 ): Promise<string> {
-  const sections = fullText.split(/\n{2,}/);
+  const sections = fullText
+    .split(/\n{2,}/)
+    .filter((section) => section.length > 50)
+    .map((section) => section.slice(0, 2000));
 
-  const inputs = [topic, ...sections];
+  const BATCH_SIZE = 100;
 
-  const response = await openai.embeddings.create({
+  const topicResponse = await openai.embeddings.create({
     model: "text-embedding-3-small",
-    input: inputs,
+    input: [topic],
   });
+  const topicEmbedding = topicResponse.data[0].embedding;
 
-  const [topicEmbedding, ...sectionEmbeddings] = response.data.map((d) => d.embedding);
+  const allScoredSections = [];
+  for (let i = 0; i < sections.length; i += BATCH_SIZE) {
+    const batch = sections.slice(i, i + BATCH_SIZE);
 
-  const scoredSections = sections.map((text, i) => ({
-    text,
-    score: cosineSimilarity(topicEmbedding, sectionEmbeddings[i]),
-  }));
+    const batchResponse = await openai.embeddings.create({
+      model: "text-embedding-3-small",
+      input: batch,
+    });
+
+    const batchEmbeddings = batchResponse.data.map((d) => d.embedding);
+
+    const batchScoredSections = batch.map((text, idx) => ({
+      text,
+      score: cosineSimilarity(topicEmbedding, batchEmbeddings[idx]),
+    }));
+
+    allScoredSections.push(...batchScoredSections);
+  }
 
   const SIMILARITY_THRESHOLD = 0.3;
-  
-  const relevantSections = scoredSections
-    .filter(s => s.score >= SIMILARITY_THRESHOLD)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
-  
+
+  const relevantSections = allScoredSections
+    .filter((s) => s.score >= SIMILARITY_THRESHOLD)
+
   if (relevantSections.length === 0) {
     return "No relevant content found";
   }
-  
-  return relevantSections.map(s => s.text).join("\n\n");
-  
-  //---------------------------------------------------
 
-  // try {
-  //   const response = await fetch(`${origin}/api/filter-text`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ topic, fullText }),
-  //   });
-
-  //   const data = await response.json();
-
-  //   if (!response.ok) {
-  //     throw new Error(data.error || "Failed to filter text");
-  //   }
-
-  //   return data.filteredText;
-  // } catch (error) {
-  //   console.error("Error filtering text:", error);
-  //   return "";
-  // }
+  return relevantSections.map((s) => s.text).join("\n\n");
 }
 
 export function cosineSimilarity(vecA: number[], vecB: number[]): number {
