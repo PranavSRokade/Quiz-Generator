@@ -52,74 +52,57 @@ export async function filterTextByTopic(
   topic: string,
   origin: string
 ): Promise<string> {
-  // const lowerTopic = topic.toLowerCase();
+  const sections = fullText.split(/\n{2,}/);
 
-  // const sections = fullText.split(/\n{2,}/);
+  const inputs = [topic, ...sections];
 
-  // const relevantSections = sections.filter((sec) =>
-  //   sec.toLowerCase().includes(lowerTopic)
-  // );
+  const response = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: inputs,
+  });
 
-  // return relevantSections.slice(0, 10).join("\n\n");
-  // --------------------------------------------------
-  // const sections = fullText.split(/\n{2,}/);
+  const [topicEmbedding, ...sectionEmbeddings] = response.data.map((d) => d.embedding);
 
-  // const fuse = new Fuse(sections, {
-  //   includeScore: true,
-  //   threshold: 0.1,
-  // });
+  const scoredSections = sections.map((text, i) => ({
+    text,
+    score: cosineSimilarity(topicEmbedding, sectionEmbeddings[i]),
+  }));
 
-  // const results = fuse.search(topic);
-
-  // return results
-  //   .slice(0, 10)
-  //   .map((res) => res.item)
-  //   .join("\n\n");
-  // --------------------------------------------------
-  // const sections = fullText.split(/\n{2,}/);
-
-  // const inputs = [topic, ...sections];
-
-  // const response = await openai.embeddings.create({
-  //   model: "text-embedding-3-small",
-  //   input: inputs,
-  // });
-
-  // const [topicEmbedding, ...sectionEmbeddings] = response.data.map((d) => d.embedding);
-
-  // const scoredSections = sections.map((text, i) => ({
-  //   text,
-  //   score: cosineSimilarity(topicEmbedding, sectionEmbeddings[i]),
-  // }));
-
-  // const topSections = scoredSections
-  //   .sort((a, b) => b.score - a.score)
-  //   .slice(0, 10)
-  //   .map((s) => s.text);
-
-  // return topSections.join("\n\n");
+  const SIMILARITY_THRESHOLD = 0.3;
+  
+  const relevantSections = scoredSections
+    .filter(s => s.score >= SIMILARITY_THRESHOLD)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
+  
+  if (relevantSections.length === 0) {
+    return "No relevant content found";
+  }
+  
+  return relevantSections.map(s => s.text).join("\n\n");
+  
   //---------------------------------------------------
 
-  try {
-    const response = await fetch(`${origin}/api/filter-text`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ topic, fullText }),
-    });
+  // try {
+  //   const response = await fetch(`${origin}/api/filter-text`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ topic, fullText }),
+  //   });
 
-    const data = await response.json();
+  //   const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error || "Failed to filter text");
-    }
+  //   if (!response.ok) {
+  //     throw new Error(data.error || "Failed to filter text");
+  //   }
 
-    return data.filteredText;
-  } catch (error) {
-    console.error("Error filtering text:", error);
-    return "";
-  }
+  //   return data.filteredText;
+  // } catch (error) {
+  //   console.error("Error filtering text:", error);
+  //   return "";
+  // }
 }
 
 export function cosineSimilarity(vecA: number[], vecB: number[]): number {

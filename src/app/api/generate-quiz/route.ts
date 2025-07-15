@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { SearchResult } from "@/types";
 import OpenAI from "openai";
 
-//integreate embediing models and use it for dsa module and test the code part as well
-
 const OPEN_AI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
