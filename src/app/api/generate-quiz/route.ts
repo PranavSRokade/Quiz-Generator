@@ -7,8 +7,6 @@ import { extractAllPDFText, filterTextByTopic } from "@/lib/server-functions";
 const OPEN_AI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-// TODO: update it to avoid stuff "what he taught"
-// avoid: . What is the primary focus of the course 18.404J?
 export async function POST(req: NextRequest) {
   try {
     const { topic, difficulty, questionType, course } = await req.json();
@@ -128,6 +126,7 @@ export async function POST(req: NextRequest) {
                     }
                     4. Do not use any emojies anywhere. 
                     5. The options should have meaninful distractors.
+                    6. Avoid phrasing that refers to the lecturer, teaching, or delivery for example phrases like “the professor explained”, “as taught”, “what he said”, etc. Focus only on the content and concepts themselves.
 
                     Material:
                     ${content}`;
@@ -163,8 +162,9 @@ export async function POST(req: NextRequest) {
             }
           ]
         }
-      5. Do not use any emojies anywhere.
-      6. The answer should be accurate and brief, typically one sentence or phrase. Avoid vague or overly broad answers.
+      4. Do not use any emojies anywhere.
+      5. The answer should be accurate and brief, typically one sentence or phrase. Avoid vague or overly broad answers.
+      6. Avoid phrasing that refers to the lecturer, teaching, or delivery for example phrases like “the professor explained”, “as taught”, “what he said”, etc. Focus only on the content and concepts themselves.
 
       Material:
       ${content}`;
@@ -202,6 +202,7 @@ export async function POST(req: NextRequest) {
       }
       4. Do not use any emojies anywhere.
       5. The answer field should include a sample high-quality response that a well-informed learner might write, demonstrating clarity, structure, and depth.
+      6. Avoid phrasing that refers to the lecturer, teaching, or delivery for example phrases like “the professor explained”, “as taught”, “what he said”, etc. Focus only on the content and concepts themselves.
 
       Material:
       ${content}`;
