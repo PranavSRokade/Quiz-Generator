@@ -394,3 +394,22 @@
 .feedbackBlock ol li {
   margin-bottom: 6px;
 }
+
+.wordCounter {
+  font-size: 0.875rem;
+  margin-top: 4px;
+  text-align: right;
+  font-weight: 500;
+}
+
+.wordCounterGood {
+  color: #28a745;
+}
+
+.wordCounterWarning {
+  color: #fd7e14;
+}
+
+.wordCounterError {
+  color: #dc3545;
+}

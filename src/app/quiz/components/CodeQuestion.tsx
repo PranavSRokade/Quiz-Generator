@@ -82,8 +82,12 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
         <button onClick={onRunCode} className={styles.runButton}>
           Run Code
         </button>
-        <button onClick={onSubmit} className={styles.submitButton}>
-          {isEvaluating ? "Evaluating" : "Submit"}
+        <button
+          onClick={onSubmit}
+          disabled={isEvaluating}
+          className={styles.submitButton}
+        >
+          {isEvaluating ? "Evaluating..." : "Submit"}
         </button>
       </div>
 
