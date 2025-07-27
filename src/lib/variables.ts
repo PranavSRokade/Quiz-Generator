@@ -1,4 +1,3 @@
-import OpenAI from "openai";
 import path from "path";
 export enum MODULES {
   SOFTWARE_AND_FINANCE = "suf",

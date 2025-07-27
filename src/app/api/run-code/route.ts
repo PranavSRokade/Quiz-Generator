@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
         headers: { "Content-Type": "application/json" },
       }
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     return new NextResponse(
       JSON.stringify({ error: "Failed to run code", detail: err.message }),

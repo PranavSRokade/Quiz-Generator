@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
         score: 0,
         feedback: "Error parsing GPT response. Please try again.",
         raw,
+        err
       },
       { status: 500 }
     );

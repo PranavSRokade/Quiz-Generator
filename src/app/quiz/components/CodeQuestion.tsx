@@ -35,7 +35,6 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
     description,
     example,
     constraints,
-    hint,
     functionName,
   } = question;
 

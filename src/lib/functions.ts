@@ -40,6 +40,7 @@ export async function runCodeOnPiston(language: string, code: string) {
       output: stdout || "",
       error: cleanError || "",
     };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     return {
       error: "Failed to run code",

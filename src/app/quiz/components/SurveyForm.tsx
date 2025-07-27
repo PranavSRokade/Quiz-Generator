@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../quiz.module.css";
-import { LANGUAGES, MODULES, QUESTION_TYPE } from "@/lib/variables";
+import { LANGUAGES, QUESTION_TYPE } from "@/lib/variables";
 import { Course } from "@/types";
 
 interface SurveyFormProps {
