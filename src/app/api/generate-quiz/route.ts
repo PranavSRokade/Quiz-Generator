@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SearchResult } from "@/types";
 import OpenAI from "openai";
-import { extractAllPDFText, filterTextByTopic } from "@/lib/functions";
 import { MODULES, QUESTION_TYPE } from "@/lib/variables";
+import { extractAllPDFText, filterTextByTopic } from "@/lib/server-functions";
 
 const OPEN_AI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

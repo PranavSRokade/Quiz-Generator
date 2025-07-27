@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import styles from "../quiz/quiz.module.css";
+import styles from "../quiz.module.css";
 
 interface Props {
   q: {

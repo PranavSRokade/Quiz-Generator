@@ -1,9 +1,9 @@
 "use client";
 import styles from "./quiz.module.css";
 import React, { useState, useEffect } from "react";
-import CodeQuestion from "../components/CodeQuestion";
-import MCQQuestion from "../components/MCQQuestion";
-import TextQuestion from "../components/TextQuestion";
+import CodeQuestion from "./components/CodeQuestion";
+import MCQQuestion from "./components/MCQQuestion";
+import TextQuestion from "./components/TextQuestion";
 import { CodeEvaluationResult, QuizQuestion, Course } from "@/types";
 import { LANGUAGES, MODULES, QUESTION_TYPE } from "@/lib/variables";
 import { convertToSeconds } from "@/lib/functions";

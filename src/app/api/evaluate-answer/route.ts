@@ -1,4 +1,3 @@
-import { extractAllPDFText, filterTextByTopic } from "@/lib/functions";
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 

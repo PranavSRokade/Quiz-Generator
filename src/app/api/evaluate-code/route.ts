@@ -1,5 +1,4 @@
-import { extractAllPDFText, filterTextByTopic } from "@/lib/functions";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const OPEN_AI = new OpenAI({
