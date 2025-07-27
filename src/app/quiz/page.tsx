@@ -10,6 +10,7 @@ export default function Home() {
   //utility states
   const [loading, setLoading] = useState(false);
   const [evaluating, setEvaluating] = useState(false);
+  const [coursesLoading, setCoursesLoading] = useState<boolean>(false);
 
   //textual questions
   const [selectedCourse, setSelectedCourse] = useState<Course>();
@@ -19,10 +20,7 @@ export default function Home() {
   );
   const [difficulty, setDifficulty] = useState("");
   const [error, setError] = useState<string>("");
-
-  // Dynamic courses state
   const [courses, setCourses] = useState<Course[]>([]);
-  const [coursesLoading, setCoursesLoading] = useState<boolean>(false);
 
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<{
@@ -41,7 +39,16 @@ export default function Home() {
   const [evaluations, setEvaluations] = useState<CodeEvaluationResult[]>([]);
   const [showHints, setShowHints] = useState<{ [key: number]: boolean }>({});
 
-  const fetchCourses = async () => {
+  const toggleHint = (index: number) => {
+    setShowHints((prev) => ({ ...prev, [index]: !prev[index] }));
+  };
+
+  const mcqOptionChange = (questionIndex: number, option: string) => {
+    setSelectedOptions({ ...selectedOptions, [questionIndex]: option });
+    setValidationErrors((prev) => ({ ...prev, [questionIndex]: false }));
+  };
+
+  const handleFetchCourses = async () => {
     setCoursesLoading(true);
 
     try {
@@ -65,7 +72,7 @@ export default function Home() {
     }
   };
 
-  const fetchQuestions = async () => {
+  const handleFetchQuestions = async () => {
     setLoading(true);
     setSelectedOptions({});
     setShowResults(false);
@@ -102,7 +109,7 @@ export default function Home() {
     }
   };
 
-  const evaluateWrittenAnswers = async () => {
+  const handleEvaluateTextualAnswers = async () => {
     setEvaluating(true);
 
     const evaluations = await Promise.all(
@@ -127,16 +134,7 @@ export default function Home() {
     return evaluations;
   };
 
-  const toggleHint = (index: number) => {
-    setShowHints((prev) => ({ ...prev, [index]: !prev[index] }));
-  };
-
-  const mcqOptionChange = (questionIndex: number, option: string) => {
-    setSelectedOptions({ ...selectedOptions, [questionIndex]: option });
-    setValidationErrors((prev) => ({ ...prev, [questionIndex]: false }));
-  };
-
-  const textualQuizSubmit = async () => {
+  const handleTextualQuizSubmit = async () => {
     const newValidationErrors: { [key: number]: boolean } = {};
     let hasErrors = false;
 
@@ -161,7 +159,7 @@ export default function Home() {
 
     setEvaluating(true);
 
-    const evaluations = await evaluateWrittenAnswers();
+    const evaluations = await handleEvaluateTextualAnswers();
     setEvaluations(evaluations);
     setShowResults(true);
 
@@ -232,7 +230,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchCourses();
+    handleFetchCourses();
   }, []);
 
   return (
@@ -251,7 +249,7 @@ export default function Home() {
           selectedCourse={selectedCourse}
           setSelectedCourse={setSelectedCourse}
           courses={courses}
-          onSubmit={fetchQuestions}
+          onSubmit={handleFetchQuestions}
           loading={loading}
           coursesLoading={coursesLoading}
         />
@@ -285,7 +283,7 @@ export default function Home() {
               !showResults &&
               questionType !== QUESTION_TYPE.CODE && (
                 <button
-                  onClick={textualQuizSubmit}
+                  onClick={handleTextualQuizSubmit}
                   className={styles.submitButton}
                 >
                   {evaluating ? "Evaluating..." : "Submit Quiz"}
