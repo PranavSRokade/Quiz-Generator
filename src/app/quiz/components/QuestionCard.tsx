@@ -153,69 +153,73 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
                 <em className={styles.hintText}>{question.hint}</em>
               </p>
             )}
-          </div>
 
-          {showResults && (
-            <div className={styles.evaluationBlock}>
-              <h2 style={{ color: "#222", fontWeight: 700 }}>{`${
-                question.type === QUESTION_TYPE.CODE ? "Code" : "Answer"
-              } Evaluation`}</h2>
-              <div className={styles.feedbackBlock}>
-                {question.type === QUESTION_TYPE.MCQ ? (
-                  <div>
-                    <p
-                      className={
-                        selectedOptions[index] === question.answer
-                          ? styles.correctAnswer
-                          : styles.incorrectAnswer
-                      }
-                    >
-                      {selectedOptions[index] === question.answer
-                        ? "Correct"
-                        : `Incorrect (Correct: ${question.answer})`}
-                    </p>
-                    <br />
-                    <strong>Explaination:</strong>{" "}
-                    <em>{question.explanation}</em>
-                  </div>
-                ) : question.type === QUESTION_TYPE.SHORT ||
-                  question.type === QUESTION_TYPE.LONG ? (
-                  <p>
-                    <strong>Score:</strong>{" "}
-                    {`${evaluations?.[index]?.score ?? "Not evaluated"} / 1`}
-                    <br />
-                    <br />
-                    <strong>Feedback:</strong>{" "}
-                    <em>{evaluations?.[index]?.feedback}</em>
-                    <br />
-                    <br />
-                    <strong>Explaination:</strong>{" "}
-                    <em>{question.explanation}</em>
-                  </p>
-                ) : (
-                  evaluations?.[index] &&
-                  evaluations?.[index]?.feedback !== "" && (
-                    <ReactMarkdown>
-                      {evaluations?.[index].feedback}
-                    </ReactMarkdown>
-                  )
-                )}
-                {question.type !== QUESTION_TYPE.MCQ &&
-                  question.type !== QUESTION_TYPE.CODE && (
-                    <p>
+            {showResults && (
+              <div className={styles.evaluationBlock}>
+                <h2
+                  style={{ color: "#222", fontWeight: 700, marginTop: 10 }}
+                >{`${
+                  question.type === QUESTION_TYPE.CODE ? "Code" : "Answer"
+                } Evaluation`}</h2>
+                <div className={styles.feedbackBlock}>
+                  {question.type === QUESTION_TYPE.MCQ ? (
+                    <div>
+                      <p
+                        className={
+                          selectedOptions[index] === question.answer
+                            ? styles.correctAnswer
+                            : styles.incorrectAnswer
+                        }
+                      >
+                        {selectedOptions[index] === question.answer
+                          ? "Correct"
+                          : `Incorrect (Correct: ${question.answer})`}
+                      </p>
                       <br />
-                      <strong>Possible correct answers could be: -</strong>{" "}
-                      {question.possibleCorrectAnswers.map((answer, i) => (
-                        <em key={i + 1}>
-                          <br />
-                          {i + 1}. {answer}
-                        </em>
-                      ))}
+                      <strong>Explaination:</strong>{" "}
+                      <em>{question.explanation}</em>
+                    </div>
+                  ) : question.type === QUESTION_TYPE.SHORT ||
+                    question.type === QUESTION_TYPE.LONG ? (
+                    <p>
+                      <strong>Score:</strong>{" "}
+                      {`${evaluations?.[index]?.score ?? "Not evaluated"} / 1`}
+                      <br />
+                      <br />
+                      <strong>Feedback:</strong>{" "}
+                      <em>{evaluations?.[index]?.feedback}</em>
+                      <br />
+                      <br />
+                      <strong>Explaination:</strong>{" "}
+                      <em>{question.explanation}</em>
                     </p>
+                  ) : (
+                    evaluations?.[index] &&
+                    evaluations?.[index]?.feedback !== "" && (
+                      <ReactMarkdown>
+                        {evaluations?.[index].feedback}
+                      </ReactMarkdown>
+                    )
                   )}
+                  {question.type !== QUESTION_TYPE.MCQ &&
+                    question.type !== QUESTION_TYPE.CODE && (
+                      <p>
+                        <br />
+                        <strong>
+                          Possible correct answers could be: -
+                        </strong>{" "}
+                        {question.possibleCorrectAnswers.map((answer, i) => (
+                          <em key={i + 1}>
+                            <br />
+                            {i + 1}. {answer}
+                          </em>
+                        ))}
+                      </p>
+                    )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       ))}
     </>

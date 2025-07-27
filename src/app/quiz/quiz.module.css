@@ -45,7 +45,6 @@
 }
 
 .main {
-
   margin: 0 auto;
   background: #fff;
   padding: 2rem;
@@ -105,7 +104,7 @@
 }
 
 .feedbackBlock {
-  background-color: #f9f9f9;
+  background-color: #6e1414;
   border-left: 4px solid #4caf50;
   border-top: 1px solid #4caf50;
   padding: 16px 24px;
@@ -329,6 +328,7 @@
 .runButton {
   background-color: #0070f3;
   color: white;
+  width: 10%;
 }
 
 .runButton:hover {
@@ -359,4 +359,38 @@
 .functionName code {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
+}
+
+.feedback {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #444;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #fafafa;
+}
+
+.feedbackBlock {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  padding: 16px 24px;
+  margin-top: 12px;
+  font-style: normal;
+  color: #333;
+  border-radius: 6px;
+  font-size: 1.08rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  border-radius: 12px;
+}
+
+.feedbackBlock ol {
+  padding-left: 40px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.feedbackBlock ol li {
+  margin-bottom: 6px;
 }

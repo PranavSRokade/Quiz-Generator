@@ -28,7 +28,7 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
   onSubmit,
   evaluationResult,
   isEvaluating,
-  language
+  language,
 }) => {
   const {
     question: title,
@@ -83,7 +83,7 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
           Run Code
         </button>
         <button onClick={onSubmit} className={styles.submitButton}>
-          Submit
+          {isEvaluating ? "Evaluating" : "Submit"}
         </button>
       </div>
 
@@ -92,13 +92,10 @@ const CodeQuestion: React.FC<CodeQuestionProps> = ({
         <pre>{output}</pre>
       </div>
 
-      {isEvaluating && <p className={styles.loadingText}>Evaluating...</p>}
-
       {evaluationResult && (
         <div className={styles.evaluationBlock}>
-          <h2>Evaluation</h2>
+          <h2>Code Evaluation</h2>
           <div className={styles.feedbackBlock}>
-            <h3>Feedback</h3>
             <ReactMarkdown>{evaluationResult.feedback}</ReactMarkdown>
           </div>
         </div>
