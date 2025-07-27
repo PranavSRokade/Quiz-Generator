@@ -20,10 +20,13 @@ export async function POST(req: NextRequest) {
 
     if (questionType === QUESTION_TYPE.CODE) {
       try {
-        const fullText = await extractAllPDFText(QUESTION_TYPE.CODE, MODULES.DATA_STRUCTURE_ALGORITHM);
-        
+        const fullText = await extractAllPDFText(
+          QUESTION_TYPE.CODE,
+          MODULES.DATA_STRUCTURE_ALGORITHM
+        );
+
         const filteredContent = await filterTextByTopic(fullText, topic);
-        
+
         if (filteredContent === "No relevant content found") {
           return NextResponse.json(
             {
@@ -32,7 +35,7 @@ export async function POST(req: NextRequest) {
             { status: 404 }
           );
         }
-        
+
         content = filteredContent;
       } catch (error) {
         console.error("Error processing DSA content:", error);
@@ -76,8 +79,19 @@ export async function POST(req: NextRequest) {
       }
 
       content = searchResults
-        .map((result) => result.document.content)
-        .join("\n\n");
+        .map((result) => {
+          const doc = result.document;
+
+          return (
+            `Page: ${doc.page_number}\n` +
+            `Start Time: ${doc.timestamp.start}\n` +
+            `End Time: ${doc.timestamp.end}\n` +
+            `Type: ${doc.doc_type}\n` +
+            `URL: ${doc.url}\n\n` +
+            `${doc.content}`
+          );
+        })
+        .join("\n\n---\n\n");
     }
 
     const mcqPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${course}.
@@ -86,21 +100,35 @@ export async function POST(req: NextRequest) {
 
                     1. Generate only ${difficulty} level multiple-choice questions. The difficulty should reflect the complexity of the question wording, required understanding, and depth of explanation.
                     2. Make sure each question includes a hint to help the user before they answer, but NEVER gives away the correct answer.
-                    3. Respond ONLY in the following JSON format:
+                    3. Add a 'source' field to each question as an object. It must include:
+                      {
+                        "url": string,
+                        "page_number": number,
+                        "timestamp": { "start": string | null, "end": string | null },
+                        "doc_type": string
+                      }
+                      Use null for timestamps in PDFs. Use accurate document metadata.
+                    4. Respond ONLY in the following JSON format:
                     {
                       "questions": [
                         {
                           "question": "string",
                           "options": ["string", "string", "string", "string"],
                           "answer": "string",
-                          "explanation": "string"
+                          "explanation": "string",
                           "hint": "string",
                           "type": "mcq",
+                          "source": {
+                            "url": "string",
+                            "page_number": number,
+                            "timestamp": { "start": "string | null", "end": "string | null" },
+                            "doc_type": "string"
+                          }
                         }
                       ]
                     }
-                    4. Do not use any emojies anywhere. 
-                    5. The options should have meaninful distractors.
+                    5. Do not use any emojies anywhere. 
+                    6. The options should have meaninful distractors.
 
                     Material:
                     ${content}`;
@@ -110,21 +138,36 @@ export async function POST(req: NextRequest) {
 
       1. Generate only ${difficulty} level short-answer questions. These questions should require a concise, precise response that tests understanding and recall without guessing.
       2. Make sure each question includes a hint to help the user before they answer, but NEVER gives away the correct answer.
-      3. Respond ONLY in the following JSON format:
-      {
-        "questions": [
-          {
-            "question": "string",
-            "answer": "string",
-            "explanation": "string",
-            "hint": "string"
-            "type": "short",
-            "possibleCorrectAnswers": ["string", "string", "string", "string"]
-          }
-        ]
-      }
-      4. Do not use any emojies anywhere.
-      5. The answer should be accurate and brief, typically one sentence or phrase. Avoid vague or overly broad answers.
+      3. Add a 'source' field to each question as an object. It must include:
+        {
+          "url": string,
+          "page_number": number,
+          "timestamp": { "start": string | null, "end": string | null },
+          "lecture_title": string,
+          "doc_type": string
+        }
+      4. Respond ONLY in the following JSON format:
+        {
+          "questions": [
+            {
+              "question": "string",
+              "answer": "string",
+              "explanation": "string",
+              "hint": "string",
+              "type": "short",
+              "possibleCorrectAnswers": ["string", "string", "string", "string"],
+              "source": {
+                "url": "string",
+                "page_number": number,
+                "timestamp": { "start": "string | null", "end": "string | null" },
+                "lecture_title": "string",
+                "doc_type": "string"
+              }
+            }
+          ]
+        }
+      5. Do not use any emojies anywhere.
+      6. The answer should be accurate and brief, typically one sentence or phrase. Avoid vague or overly broad answers.
 
       Material:
       ${content}`;
@@ -135,17 +178,30 @@ export async function POST(req: NextRequest) {
 
       1. Generate only ${difficulty} level long-answer questions. These should encourage deeper reflection, explanation, or analysis and require answers typically longer than a few sentences.
       2. Make sure each question includes a hint to help the user before they answer, but NEVER gives away the correct answer.
-      3. Respond ONLY in the following JSON format:
+      3. Add a 'source' field to each question as an object. It must include:
+        {
+          "url": string,
+          "page_number": number,
+          "timestamp": { "start": string | null, "end": string | null },
+          "lecture_title": string,
+          "doc_type": string
+        }
+      4. Respond ONLY in the following JSON format:
       {
         "questions": [
           {
             "question": "string",
             "answer": "string",
             "explanation": "string",
-            "hint": "string"
+            "hint": "string",
             "type": "long",
-            "possibleCorrectAnswers": ["string", "string", "string", "string"]
-
+            "possibleCorrectAnswers": ["string", "string", "string", "string"],
+            "source": {
+              "url": "string",
+              "page_number": number,
+              "timestamp": { "start": "string | null", "end": "string | null" },
+              "doc_type": "string"
+            }
           }
         ]
       }

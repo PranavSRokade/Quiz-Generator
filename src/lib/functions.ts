@@ -49,7 +49,7 @@ export async function extractAllPDFText(
 
 export async function filterTextByTopic(
   fullText: string,
-  topic: string,
+  topic: string
 ): Promise<string> {
   const sections = fullText
     .split(/\n{2,}/)
@@ -85,8 +85,9 @@ export async function filterTextByTopic(
 
   const SIMILARITY_THRESHOLD = 0.3;
 
-  const relevantSections = allScoredSections
-    .filter((s) => s.score >= SIMILARITY_THRESHOLD)
+  const relevantSections = allScoredSections.filter(
+    (s) => s.score >= SIMILARITY_THRESHOLD
+  );
 
   if (relevantSections.length === 0) {
     return "No relevant content found";
@@ -199,4 +200,9 @@ function getLanguageId(language: string): number | null {
     cpp: 54, // C++ (GCC 9.2.0)
   };
   return mapping[language.toLowerCase()] || null;
+}
+
+export function convertToSeconds(timestamp: string) {
+  const [h, m, s] = timestamp.split(":").map(Number);
+  return h * 3600 + m * 60 + s;
 }

@@ -6,6 +6,7 @@ import MCQQuestion from "../components/MCQQuestion";
 import TextQuestion from "../components/TextQuestion";
 import { CodeEvaluationResult, QuizQuestion, Course } from "@/types";
 import { LANGUAGES, MODULES, QUESTION_TYPE } from "@/lib/variables";
+import { convertToSeconds } from "@/lib/functions";
 
 export default function Home() {
   //utility states
@@ -28,7 +29,9 @@ export default function Home() {
     [key: number]: string;
   }>({});
   const [textAnswers, setTextAnswers] = useState<{ [key: number]: string }>({});
-  const [validationErrors, setValidationErrors] = useState<{ [key: number]: boolean }>({});
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   const [showResults, setShowResults] = useState(false);
   const [showHints, setShowHints] = useState<{ [key: number]: boolean }>({});
@@ -355,7 +358,9 @@ export default function Home() {
                             index={index}
                             selectedOption={selectedOptions[index]}
                             onChange={mcqOptionChange}
-                            hasValidationError={validationErrors[index] || false}
+                            hasValidationError={
+                              validationErrors[index] || false
+                            }
                           />
                         )
                       );
@@ -369,7 +374,10 @@ export default function Home() {
                           hasValidationError={validationErrors[index] || false}
                           onChange={(i, val) => {
                             setTextAnswers((prev) => ({ ...prev, [i]: val }));
-                            setValidationErrors((prev) => ({ ...prev, [i]: false }));
+                            setValidationErrors((prev) => ({
+                              ...prev,
+                              [i]: false,
+                            }));
                           }}
                         />
                       );
@@ -383,7 +391,10 @@ export default function Home() {
                           hasValidationError={validationErrors[index] || false}
                           onChange={(i, val) => {
                             setTextAnswers((prev) => ({ ...prev, [i]: val }));
-                            setValidationErrors((prev) => ({ ...prev, [i]: false }));
+                            setValidationErrors((prev) => ({
+                              ...prev,
+                              [i]: false,
+                            }));
                           }}
                         />
                       );
@@ -416,10 +427,29 @@ export default function Home() {
 
                 <button
                   type="button"
-                  onClick={() => toggleHint(index)}
+                  onClick={() => {
+                    const source = q.source;
+                    if (!source?.url) return;
+
+                    let finalUrl = source.url;
+
+                    if (source.doc_type === "mp4" && source.timestamp?.start) {
+                      const seconds = convertToSeconds(source.timestamp.start);
+                      const separator = source.url.includes("?") ? "&" : "?";
+                      finalUrl = `${source.url}${separator}t=${seconds}`;
+                    }
+
+                    if (source.doc_type === "pdf" && source.page_number) {
+                      const separator = source.url.includes("#")
+                        ? ""
+                        : "#page=";
+                      finalUrl = `${source.url}${separator}${source.page_number}`;
+                    }
+
+                    window.open(finalUrl, "_blank");
+                  }}
                   className={styles.hintButton}
                 >
-                  {/* This when clicked should give a pointer to the relevant course material. */}
                   {showHints[index] ? "Hide Hint" : "Show Hint"}
                 </button>
 

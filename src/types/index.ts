@@ -5,6 +5,14 @@ export interface TestCase {
   expectedOutput: string;
 }
 
+export interface Source {
+  url: string;
+  thumbnail_url: string;
+  timestamp: Timestamp;
+  page_number: number;
+  doc_type: "pdf" | "mp4";
+}
+
 export interface QuizQuestion {
   // Common
   type: QUESTION_TYPE;
@@ -13,6 +21,7 @@ export interface QuizQuestion {
   explanation: string;
   hint: string;
   possibleCorrectAnswers: string[];
+  source: Source;
 
   // For MCQ questions only
   options?: string[];
