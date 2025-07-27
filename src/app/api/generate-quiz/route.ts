@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SearchResult } from "@/types";
-import OpenAI from "openai";
 import { MODULES, QUESTION_TYPE } from "@/lib/variables";
 import { extractAllPDFText, filterTextByTopic } from "@/lib/server-functions";
+import { OPEN_AI } from "@/lib/openai";
 
-const OPEN_AI = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 export async function POST(req: NextRequest) {
   try {
     const { topic, difficulty, questionType, course } = await req.json();
