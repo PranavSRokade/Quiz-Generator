@@ -1,4 +1,4 @@
-import { runCodeOnJudge0, runCodeOnPiston } from "@/lib/functions";
+import { runCodeOnPiston } from "@/lib/functions";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await runCodeOnPiston(language, code);
-    // const result = await runCodeOnJudge0("python", code);
 
     return new NextResponse(
       JSON.stringify({

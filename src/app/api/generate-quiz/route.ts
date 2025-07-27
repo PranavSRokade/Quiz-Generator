@@ -7,7 +7,8 @@ import { extractAllPDFText, filterTextByTopic } from "@/lib/server-functions";
 const OPEN_AI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
+// TODO: update it to avoid stuff "what he taught"
+// avoid: . What is the primary focus of the course 18.404J?
 export async function POST(req: NextRequest) {
   try {
     const { topic, difficulty, questionType, course } = await req.json();
@@ -94,13 +95,12 @@ export async function POST(req: NextRequest) {
         .join("\n\n---\n\n");
     }
 
-    const mcqPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${course}.
+    const mcqPrompt = `Using the material below, generate minimum 5 quiz questions about: ${topic} from the module ${course}.
 
                     Following are various rules:
 
                     1. Generate only ${difficulty} level multiple-choice questions. The difficulty should reflect the complexity of the question wording, required understanding, and depth of explanation.
-                    2. Make sure each question includes a hint to help the user before they answer, but NEVER gives away the correct answer.
-                    3. Add a 'source' field to each question as an object. It must include:
+                    2. Add a 'source' field to each question as an object. It must include:
                       {
                         "url": string,
                         "page_number": number,
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
                         "doc_type": string
                       }
                       Use null for timestamps in PDFs. Use accurate document metadata.
-                    4. Respond ONLY in the following JSON format:
+                    3. Respond ONLY in the following JSON format:
                     {
                       "questions": [
                         {
@@ -116,7 +116,6 @@ export async function POST(req: NextRequest) {
                           "options": ["string", "string", "string", "string"],
                           "answer": "string",
                           "explanation": "string",
-                          "hint": "string",
                           "type": "mcq",
                           "source": {
                             "url": "string",
@@ -127,18 +126,17 @@ export async function POST(req: NextRequest) {
                         }
                       ]
                     }
-                    5. Do not use any emojies anywhere. 
-                    6. The options should have meaninful distractors.
+                    4. Do not use any emojies anywhere. 
+                    5. The options should have meaninful distractors.
 
                     Material:
                     ${content}`;
 
-    const shortAnswerPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${course.course_id}.
+    const shortAnswerPrompt = `Using the material below, generate minimum 3 quiz questions about: ${topic} from the module ${course.course_id}.
       Following are various rules:
 
       1. Generate only ${difficulty} level short-answer questions. These questions should require a concise, precise response that tests understanding and recall without guessing.
-      2. Make sure each question includes a hint to help the user before they answer, but NEVER gives away the correct answer.
-      3. Add a 'source' field to each question as an object. It must include:
+      2. Add a 'source' field to each question as an object. It must include:
         {
           "url": string,
           "page_number": number,
@@ -146,14 +144,13 @@ export async function POST(req: NextRequest) {
           "lecture_title": string,
           "doc_type": string
         }
-      4. Respond ONLY in the following JSON format:
+      3. Respond ONLY in the following JSON format:
         {
           "questions": [
             {
               "question": "string",
               "answer": "string",
               "explanation": "string",
-              "hint": "string",
               "type": "short",
               "possibleCorrectAnswers": ["string", "string", "string", "string"],
               "source": {
@@ -172,13 +169,12 @@ export async function POST(req: NextRequest) {
       Material:
       ${content}`;
 
-    const longAnswerPrompt = `Using the material below, generate quiz questions about: ${topic} from the module ${course.course_id}.
+    const longAnswerPrompt = `Using the material below, generate minimum 2 quiz questions about: ${topic} from the module ${course.course_id}.
 
       Following are various rules:
 
       1. Generate only ${difficulty} level long-answer questions. These should encourage deeper reflection, explanation, or analysis and require answers typically longer than a few sentences.
-      2. Make sure each question includes a hint to help the user before they answer, but NEVER gives away the correct answer.
-      3. Add a 'source' field to each question as an object. It must include:
+      2. Add a 'source' field to each question as an object. It must include:
         {
           "url": string,
           "page_number": number,
@@ -186,14 +182,13 @@ export async function POST(req: NextRequest) {
           "lecture_title": string,
           "doc_type": string
         }
-      4. Respond ONLY in the following JSON format:
+      3. Respond ONLY in the following JSON format:
       {
         "questions": [
           {
             "question": "string",
             "answer": "string",
             "explanation": "string",
-            "hint": "string",
             "type": "long",
             "possibleCorrectAnswers": ["string", "string", "string", "string"],
             "source": {

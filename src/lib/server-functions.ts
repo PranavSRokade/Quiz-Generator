@@ -108,6 +108,5 @@ export async function filterTextByTopic(
   if (relevantSections.length === 0) {
     return "No relevant content found";
   }
-  console.log(relevantSections.map((s) => s.text).join("\n\n"));
   return relevantSections.map((s) => s.text).join("\n\n");
 }
