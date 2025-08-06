@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
                     Material:
                     ${content}`;
 
-    const shortAnswerPrompt = `Using the material below, generate minimum 3 quiz questions about: ${topic} from the module ${course.course_id}.
+    const shortAnswerPrompt = `Using the material below, generate minimum 3 quiz questions about: ${topic} from the module ${course}.
       Following are various rules:
 
       1. Generate only ${difficulty} level short-answer questions. These questions should require a concise, precise response that tests understanding and recall without guessing.
@@ -166,7 +166,7 @@ export async function POST(req: NextRequest) {
       Material:
       ${content}`;
 
-    const longAnswerPrompt = `Using the material below, generate minimum 2 quiz questions about: ${topic} from the module ${course.course_id}.
+    const longAnswerPrompt = `Using the material below, generate minimum 2 quiz questions about: ${topic} from the module ${course}.
 
       Following are various rules:
 
