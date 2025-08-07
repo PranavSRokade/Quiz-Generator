@@ -3,7 +3,7 @@ import styles from "../quiz.module.css";
 import { LANGUAGES, QUESTION_TYPE } from "@/lib/variables";
 import { Course } from "@/types";
 
-interface SurveyFormProps {
+interface QuizConfigurationsProps {
   questionType: QUESTION_TYPE;
   setQuestionType: (type: QUESTION_TYPE) => void;
   topic: string;
@@ -20,7 +20,7 @@ interface SurveyFormProps {
   coursesLoading: boolean;
 }
 
-const SurveyForm: React.FC<SurveyFormProps> = ({
+const QuizConfigurations: React.FC<QuizConfigurationsProps> = ({
   questionType,
   setQuestionType,
   topic,
@@ -129,4 +129,4 @@ const SurveyForm: React.FC<SurveyFormProps> = ({
   </form>
 );
 
-export default SurveyForm;
+export default QuizConfigurations;

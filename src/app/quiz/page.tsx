@@ -3,7 +3,7 @@ import styles from "./quiz.module.css";
 import React, { useState, useEffect } from "react";
 import { CodeEvaluationResult, QuizQuestion, Course } from "@/types";
 import { LANGUAGES, QUESTION_TYPE } from "@/lib/variables";
-import SurveyForm from "./components/SurveyForm";
+import QuizConfigurations from "./components/QuizConfigurations";
 import QuestionCard from "./components/QuestionCard";
 
 export default function Home() {
@@ -237,7 +237,7 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <h1 className={styles.customTitle}>Quiz Generator</h1>
-        <SurveyForm
+        <QuizConfigurations
           questionType={questionType}
           setQuestionType={setQuestionType}
           topic={topic}
